@@ -1,0 +1,810 @@
+{
+	"compiler": {
+		"version": "0.8.19+commit.7dd6d404"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "contract IEAS",
+						"name": "eas",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "AccessDenied",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InsufficientValue",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidEAS",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "NotPayable",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "_requestName",
+						"type": "string"
+					}
+				],
+				"name": "ClosedReviewRequest",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_formId",
+						"type": "uint256"
+					}
+				],
+				"name": "CreatedReviewForm",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "_requestName",
+						"type": "string"
+					}
+				],
+				"name": "CreatedReviewRequest",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "_requestName",
+						"type": "string"
+					}
+				],
+				"name": "SubmittedReview",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "uid",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "schema",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint64",
+								"name": "time",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "expirationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "revocationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "refUID",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "recipient",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "attester",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "revocable",
+								"type": "bool"
+							},
+							{
+								"internalType": "bytes",
+								"name": "data",
+								"type": "bytes"
+							}
+						],
+						"internalType": "struct Attestation",
+						"name": "attestation",
+						"type": "tuple"
+					}
+				],
+				"name": "attest",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					}
+				],
+				"name": "closeReviewRequest",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "contractVersion",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"internalType": "address[]",
+						"name": "reviewers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "hypercertTargetIDs",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "string[]",
+						"name": "targetsIPFSHashes",
+						"type": "string[]"
+					},
+					{
+						"internalType": "string",
+						"name": "formIpfsHash",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rewardPerReview",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "reviewFormIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "createRequest",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "easSchemaID",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "string[]",
+						"name": "questions",
+						"type": "string[]"
+					},
+					{
+						"internalType": "string[][]",
+						"name": "choices",
+						"type": "string[][]"
+					},
+					{
+						"internalType": "enum DeresyResolver.QuestionType[]",
+						"name": "questionTypes",
+						"type": "uint8[]"
+					}
+				],
+				"name": "createReviewForm",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					}
+				],
+				"name": "getRequest",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "reviewers",
+						"type": "address[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "hypercertTargetIDs",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "string[]",
+						"name": "targetsIPFSHashes",
+						"type": "string[]"
+					},
+					{
+						"internalType": "string",
+						"name": "formIpfsHash",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rewardPerReview",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "reviewer",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "hypercertID",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string[]",
+								"name": "answers",
+								"type": "string[]"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "attestationID",
+								"type": "bytes32"
+							}
+						],
+						"internalType": "struct DeresyResolver.Review[]",
+						"name": "reviews",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "reviewFormIndex",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isClosed",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_reviewFormIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "getReviewForm",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					},
+					{
+						"internalType": "enum DeresyResolver.QuestionType[]",
+						"name": "",
+						"type": "uint8[]"
+					},
+					{
+						"internalType": "string[][]",
+						"name": "choices",
+						"type": "string[][]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getReviewRequestsNames",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "isPayable",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "uid",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "schema",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint64",
+								"name": "time",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "expirationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "revocationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "refUID",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "recipient",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "attester",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "revocable",
+								"type": "bool"
+							},
+							{
+								"internalType": "bytes",
+								"name": "data",
+								"type": "bytes"
+							}
+						],
+						"internalType": "struct Attestation[]",
+						"name": "attestations",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "values",
+						"type": "uint256[]"
+					}
+				],
+				"name": "multiAttest",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "uid",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "schema",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint64",
+								"name": "time",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "expirationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "revocationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "refUID",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "recipient",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "attester",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "revocable",
+								"type": "bool"
+							},
+							{
+								"internalType": "bytes",
+								"name": "data",
+								"type": "bytes"
+							}
+						],
+						"internalType": "struct Attestation[]",
+						"name": "attestations",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "values",
+						"type": "uint256[]"
+					}
+				],
+				"name": "multiRevoke",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "reviewFormsTotal",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "uid",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "schema",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint64",
+								"name": "time",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "expirationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "revocationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "refUID",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "recipient",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "attester",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "revocable",
+								"type": "bool"
+							},
+							{
+								"internalType": "bytes",
+								"name": "data",
+								"type": "bytes"
+							}
+						],
+						"internalType": "struct Attestation",
+						"name": "attestation",
+						"type": "tuple"
+					}
+				],
+				"name": "revoke",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "version",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"attest((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes))": {
+					"details": "Processes an attestation and verifies whether it's valid.",
+					"params": {
+						"attestation": "The new attestation."
+					},
+					"returns": {
+						"_0": "Whether the attestation is valid."
+					}
+				},
+				"isPayable()": {
+					"details": "Returns whether the resolver supports ETH transfers."
+				},
+				"multiAttest((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes)[],uint256[])": {
+					"details": "Processes multiple attestations and verifies whether they are valid.",
+					"params": {
+						"attestations": "The new attestations.",
+						"values": "Explicit ETH amounts which were sent with each attestation."
+					},
+					"returns": {
+						"_0": "Whether all the attestations are valid."
+					}
+				},
+				"multiRevoke((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes)[],uint256[])": {
+					"details": "Processes revocation of multiple attestation and verifies they can be revoked.",
+					"params": {
+						"attestations": "The existing attestations to be revoked.",
+						"values": "Explicit ETH amounts which were sent with each revocation."
+					},
+					"returns": {
+						"_0": "Whether the attestations can be revoked."
+					}
+				},
+				"revoke((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes))": {
+					"details": "Processes an attestation revocation and verifies if it can be revoked.",
+					"params": {
+						"attestation": "The existing attestation to be revoked."
+					},
+					"returns": {
+						"_0": "Whether the attestation can be revoked."
+					}
+				},
+				"version()": {
+					"returns": {
+						"_0": "Semver contract version as a string."
+					}
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"version()": {
+					"notice": "Returns the full semver contract version."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/DeresyResolver.sol": "DeresyResolver"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@ethereum-attestation-service/eas-contracts/contracts/Common.sol": {
+			"keccak256": "0x4bab9ec76bdb009e9fb505c45a679d39c9e80771eb13ed901029a1068025752a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f7eee2a67a0951a97f07b15335a1553068c7bb5e208bb2a2c0d90cdff32b9280",
+				"dweb:/ipfs/QmVBUCtd2Yocadu7nYZKZKePDyvU1BkYaNdSX2C5kvhCsg"
+			]
+		},
+		"@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol": {
+			"keccak256": "0xd530be686226f3c8d7b02bb59797901620f64749a02228539afc8b082a1ee036",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4ba131bf90235d1a9ce53c013e238a9c1c4fbe670b8eac6b598adc6986ef5f65",
+				"dweb:/ipfs/QmeNjveV6LP8Wp4aRuziwZB4pNaVnBnGw8cbmHjKcwxyRK"
+			]
+		},
+		"@ethereum-attestation-service/eas-contracts/contracts/ISchemaRegistry.sol": {
+			"keccak256": "0xef47e449dd02bd034e26b1dea505ce533906f8462fc674c938ed0e872a68d640",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://62f96084887d44e3e2c91c2b020f861d36ffcce620ee1312ed330653d999930d",
+				"dweb:/ipfs/QmWXrErdfQxoFsJw8L4kaKHqPLX3Zg9ruf9FJvyMRatF8S"
+			]
+		},
+		"@ethereum-attestation-service/eas-contracts/contracts/Semver.sol": {
+			"keccak256": "0xdd3bfff2af5b5cea194f5a771080d13ad458040825b148e0d7eb65f6e3a2a7c7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d8ec74a212f9179ecc5b93692ad10e747f7c20cbec84ee4a9e13c3b9a0178450",
+				"dweb:/ipfs/QmYe5Rj6GHChALgjZKrTKTBqgfLwBNBefLk3BW1h5kZuJp"
+			]
+		},
+		"@ethereum-attestation-service/eas-contracts/contracts/resolver/ISchemaResolver.sol": {
+			"keccak256": "0xc628c6540da258f76192eaa34c21699c9cbcc4a4029d7ee04e88dc9c18c981fd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a2229a862abb07e2ee6d1d511ab8a4326035d450b67a617b957b1117602ba5d6",
+				"dweb:/ipfs/QmTSV7fYuoxwU8GmsgWttHWTEbiZdVhs846k4B2tficPvP"
+			]
+		},
+		"@ethereum-attestation-service/eas-contracts/contracts/resolver/SchemaResolver.sol": {
+			"keccak256": "0x8bac9997f3c6b2e9a165342e35c1263d1942ce55a98ecbe0aa6ec84fcb6538d7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://09ad22e31d8c874f26ac1005bd724279f01e3aa3c59d9aa2864398adbf803171",
+				"dweb:/ipfs/QmUUMgN8YrUJUpnwNwNtttGn1uTnPGH4Zaa4mEMG7bkAu5"
+			]
+		},
+		"@openzeppelin/contracts/utils/Strings.sol": {
+			"keccak256": "0x3088eb2868e8d13d89d16670b5f8612c4ab9ff8956272837d8e90106c59c14a0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b81d9ff6559ea5c47fc573e17ece6d9ba5d6839e213e6ebc3b4c5c8fe4199d7f",
+				"dweb:/ipfs/QmPCW1bFisUzJkyjroY3yipwfism9RRCigCcK1hbXtVM8n"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/Math.sol": {
+			"keccak256": "0xe4455ac1eb7fc497bb7402579e7b4d64d928b846fce7d2b6fde06d366f21c2b3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cc8841b3cd48ad125e2f46323c8bad3aa0e88e399ec62acb9e57efa7e7c8058c",
+				"dweb:/ipfs/QmSqE4mXHA2BXW58deDbXE8MTcsL5JSKNDbm23sVQxRLPS"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SignedMath.sol": {
+			"keccak256": "0xf92515413956f529d95977adc9b0567d583c6203fc31ab1c23824c35187e3ddc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c50fcc459e49a9858b6d8ad5f911295cb7c9ab57567845a250bf0153f84a95c7",
+				"dweb:/ipfs/QmcEW85JRzvDkQggxiBBLVAasXWdkhEysqypj9EaB6H2g6"
+			]
+		},
+		"contracts/DeresyResolver.sol": {
+			"keccak256": "0xe927c9743ce6eac0039b1b9e77ca8eb455eb1936988750d106a16c69e3c3cb12",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1c17568a02b21666ad6d9b1250ae98b57fc71dcb0dc3e3dd2517172959a796f8",
+				"dweb:/ipfs/QmZcJh1g3ye1JBXQyJZkGA6MJkJF1gS6UyteJSBueVSVXo"
+			]
+		}
+	},
+	"version": 1
+}
