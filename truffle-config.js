@@ -46,8 +46,8 @@ require('dotenv').config()
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 const Web3 = require('web3')
 
-const infuraLiveLink = `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`
-const infuraGoerliLink = `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`
+const goerliOptimism = `https://optimism-goerli.infura.io/v3/${process.env.INFURA_API_KEY}`
+const optimism = `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`
 const mnemonic = process.env.MNEMONIC
 
 const web3 = new Web3()
@@ -70,11 +70,22 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     //
-    goerli: {
+    optimism_goerli: {
       provider: function () {
-        return new HDWalletProvider(mnemonic, infuraGoerliLink)
+        return new HDWalletProvider(mnemonic, goerliOptimism)
       },
-      network_id: "42069",
+      network_id: '420',
+      gasPrice: web3.utils.toWei('150', 'gwei'),
+      networkCheckTimeout: 999999,
+      timeoutBlocks: 200,
+      skipDryRun: true
+    },
+
+    optimism: {
+      provider: function () {
+        return new HDWalletProvider(mnemonic, optimism)
+      },
+      network_id: '10',
       gasPrice: web3.utils.toWei('150', 'gwei'),
       networkCheckTimeout: 999999,
       timeoutBlocks: 200,
@@ -124,7 +135,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: '0.8.17', // Fetch exact version from solc-bin (default: truffle's version)
+      version: '0.8.19', // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       settings: {
         // See the solidity docs for advice about optimization and evmVersion
