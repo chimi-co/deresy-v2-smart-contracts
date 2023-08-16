@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:chimi-co/deresy-v2-smart-contracts.git",
-  "author": "Jimmy Teran <jim95.teran@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@ethereum-attestation-service/eas-contracts": "^1.0.0-beta.0",
