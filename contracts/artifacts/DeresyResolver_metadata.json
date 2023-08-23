@@ -310,11 +310,6 @@
 								"type": "uint256"
 							},
 							{
-								"internalType": "string[]",
-								"name": "answers",
-								"type": "string[]"
-							},
-							{
 								"internalType": "bytes32",
 								"name": "attestationID",
 								"type": "bytes32"
@@ -362,6 +357,11 @@
 						"internalType": "string[][]",
 						"name": "choices",
 						"type": "string[][]"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
 					}
 				],
 				"stateMutability": "view",
@@ -798,11 +798,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0xe927c9743ce6eac0039b1b9e77ca8eb455eb1936988750d106a16c69e3c3cb12",
+			"keccak256": "0x55d983c6f6cf30a98d9b5d89c302254a11276c8e8debec214b5e072061e997e9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1c17568a02b21666ad6d9b1250ae98b57fc71dcb0dc3e3dd2517172959a796f8",
-				"dweb:/ipfs/QmZcJh1g3ye1JBXQyJZkGA6MJkJF1gS6UyteJSBueVSVXo"
+				"bzz-raw://1b3e12de8466c7d1ba2fd4d78bf7b9711e39571cf930d491471014b19c8922e7",
+				"dweb:/ipfs/Qmdp6p18iMemoqTyaYSuN88LFGDV6BxCjZPdfxYzmKdRgF"
 			]
 		}
 	},

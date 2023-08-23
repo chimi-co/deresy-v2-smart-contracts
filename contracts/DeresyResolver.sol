@@ -16,7 +16,6 @@ contract DeresyResolver is SchemaResolver{
   struct Review {
     address reviewer;
     uint256 hypercertID;
-    string[] answers;
     bytes32 attestationID;
   }
     
@@ -67,7 +66,7 @@ contract DeresyResolver is SchemaResolver{
     bool isValid = isRequestOpen && isValidHypercert && hasMatchingAnswerCount && isUserReviewer && hasSubmitted && validSingleChoiceAnswers;
 
     if(isValid){
-      request.reviews.push(Review(attester,hypercertID, answers, attestationID));
+      request.reviews.push(Review(attester,hypercertID, attestationID));
       request.fundsLeft -= request.rewardPerReview;
       payable(attester).transfer(request.rewardPerReview);
       emit SubmittedReview(requestName);
@@ -126,8 +125,8 @@ contract DeresyResolver is SchemaResolver{
     return (request.reviewers, request.hypercertTargetIDs, request.targetsIPFSHashes, request.formIpfsHash, request.rewardPerReview, request.reviews, request.reviewFormIndex, request.isClosed);
   }
 
-  function getReviewForm(uint256 _reviewFormIndex) public view returns(string[] memory, QuestionType[] memory, string[][] memory choices){
-    return (reviewForms[_reviewFormIndex].questions,reviewForms[_reviewFormIndex].questionTypes, reviewForms[_reviewFormIndex].choices);
+  function getReviewForm(uint256 _reviewFormIndex) public view returns(string[] memory, QuestionType[] memory, string[][] memory choices, bytes32){
+    return (reviewForms[_reviewFormIndex].questions,reviewForms[_reviewFormIndex].questionTypes, reviewForms[_reviewFormIndex].choices, reviewForms[_reviewFormIndex].easSchemaID);
   }
 
   function getReviewRequestsNames() public view returns(string[] memory){
@@ -175,7 +174,7 @@ contract DeresyResolver is SchemaResolver{
 
   function validateHypercertID(uint256[] memory requestHypercertIDs, uint256 hypercertID) internal pure returns (bool) {
     for (uint256 i = 0; i < requestHypercertIDs.length; i++) {
-      if (requestHypercertIDs[i] == hypercertID) {
+      if (uint256(requestHypercertIDs[i]) == uint256(hypercertID)) {
         return true;
       }
     }
