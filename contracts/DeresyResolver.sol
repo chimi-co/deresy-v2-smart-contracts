@@ -132,7 +132,7 @@ contract DeresyResolver is SchemaResolver{
   function getRequestReviewForm(string memory _name) public view returns(string[] memory, QuestionType[] memory, string[][] memory choices, bytes32){
     ReviewRequest storage request = reviewRequests[_name];
     reviewForm storage requestForm = reviewForms[request.reviewFormIndex];
-     return (requestForm.questions, requestForm.questionTypes, requestForm.choices, requestForm.easSchemaID);
+    return (requestForm.questions, requestForm.questionTypes, requestForm.choices, requestForm.easSchemaID);
   }
 
   function getReviewRequestsNames() public view returns(string[] memory){

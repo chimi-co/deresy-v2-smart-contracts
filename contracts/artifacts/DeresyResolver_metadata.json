@@ -336,6 +336,40 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					}
+				],
+				"name": "getRequestReviewForm",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					},
+					{
+						"internalType": "enum DeresyResolver.QuestionType[]",
+						"name": "",
+						"type": "uint8[]"
+					},
+					{
+						"internalType": "string[][]",
+						"name": "choices",
+						"type": "string[][]"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "_reviewFormIndex",
 						"type": "uint256"
@@ -798,11 +832,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x459cde2d07001e6594aa7702c61bc439aa061fcead4650f13db54349d8c60931",
+			"keccak256": "0xbf861cff790af6e9ed1e5e9a78bcab3e1e0190667cba014eac0845f238f1114a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7a5764b73796e72572099970b0f0d0f66c076b84031815439d8d1fefba581ca1",
-				"dweb:/ipfs/QmUTjWoogYpoPVQufPQEPrheuiMtU51a7TRb4nhBXLvWVy"
+				"bzz-raw://26eb6b3bfd6b73974e5c1d3d570c48976862f5a81a71df94d9d2161664321aba",
+				"dweb:/ipfs/QmR2L2QBmDNRRuAVf8kSWv7acHF9qzgoAecFMDnrwxxym2"
 			]
 		}
 	},
