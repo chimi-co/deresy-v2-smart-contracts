@@ -126,7 +126,13 @@ contract DeresyResolver is SchemaResolver{
   }
 
   function getReviewForm(uint256 _reviewFormIndex) public view returns(string[] memory, QuestionType[] memory, string[][] memory choices, bytes32){
-    return (reviewForms[_reviewFormIndex].questions,reviewForms[_reviewFormIndex].questionTypes, reviewForms[_reviewFormIndex].choices, reviewForms[_reviewFormIndex].easSchemaID);
+    return (reviewForms[_reviewFormIndex].questions, reviewForms[_reviewFormIndex].questionTypes, reviewForms[_reviewFormIndex].choices, reviewForms[_reviewFormIndex].easSchemaID);
+  }
+
+  function getRequestReviewForm(string memory _name) public view returns(string[] memory, QuestionType[] memory, string[][] memory choices, bytes32){
+    ReviewRequest storage request = reviewRequests[_name];
+    reviewForm storage requestForm = reviewForms[request.reviewFormIndex];
+     return (requestForm.questions, requestForm.questionTypes, requestForm.choices, requestForm.easSchemaID);
   }
 
   function getReviewRequestsNames() public view returns(string[] memory){
