@@ -57,12 +57,13 @@ contract DeresyResolver is SchemaResolver{
     bytes32 attestationID = attestation.uid;
 
     bool isRequestOpen = !request.isClosed;
+    bool isValidHypercert = validateHypercertID(request.hypercertTargetIDs, hypercertID);
     bool hasMatchingAnswerCount = requestForm.questions.length == answers.length;
     bool isUserReviewer = isReviewer(attester, requestName);
     bool hasSubmitted = hasSubmittedReview(attester, requestName, hypercertID);
     bool validSingleChoiceAnswers = validateSingleChoiceAnswers(requestForm, answers);
 
-    bool isValid = isRequestOpen && hasMatchingAnswerCount && isUserReviewer && hasSubmitted && validSingleChoiceAnswers;
+    bool isValid = isRequestOpen && isValidHypercert && hasMatchingAnswerCount && isUserReviewer && hasSubmitted && validSingleChoiceAnswers;
 
     if(isValid){
       request.reviews.push(Review(attester,hypercertID, attestationID));
