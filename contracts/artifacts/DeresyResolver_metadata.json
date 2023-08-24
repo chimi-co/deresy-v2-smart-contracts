@@ -798,11 +798,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x55d983c6f6cf30a98d9b5d89c302254a11276c8e8debec214b5e072061e997e9",
+			"keccak256": "0x459cde2d07001e6594aa7702c61bc439aa061fcead4650f13db54349d8c60931",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1b3e12de8466c7d1ba2fd4d78bf7b9711e39571cf930d491471014b19c8922e7",
-				"dweb:/ipfs/Qmdp6p18iMemoqTyaYSuN88LFGDV6BxCjZPdfxYzmKdRgF"
+				"bzz-raw://7a5764b73796e72572099970b0f0d0f66c076b84031815439d8d1fefba581ca1",
+				"dweb:/ipfs/QmUTjWoogYpoPVQufPQEPrheuiMtU51a7TRb4nhBXLvWVy"
 			]
 		}
 	},
