@@ -17,7 +17,6 @@ contract DeresyResolver is SchemaResolver{
     address reviewer;
     uint256 hypercertID;
     bytes32 attestationID;
-    string pdfIpfsHash;
   }
     
   struct ReviewRequest {
@@ -51,7 +50,7 @@ contract DeresyResolver is SchemaResolver{
   constructor(IEAS eas) SchemaResolver(eas) {}
 
   function onAttest(Attestation calldata attestation, uint256 /*value*/) internal override returns (bool) {
-    (string memory requestName, uint256 hypercertID, string[] memory answers, string memory pdfIpfsHash) = abi.decode(attestation.data, (string, uint256, string[], string));
+    (string memory requestName, uint256 hypercertID, string[] memory answers,) = abi.decode(attestation.data, (string, uint256, string[], string));
     ReviewRequest storage request = reviewRequests[requestName];
     reviewForm storage requestForm = reviewForms[request.reviewFormIndex];
     address attester = attestation.attester;
@@ -67,7 +66,7 @@ contract DeresyResolver is SchemaResolver{
     bool isValid = isRequestOpen && isValidHypercert && hasMatchingAnswerCount && isUserReviewer && hasSubmitted && validSingleChoiceAnswers;
 
     if(isValid){
-      request.reviews.push(Review(attester,hypercertID, attestationID, pdfIpfsHash));
+      request.reviews.push(Review(attester,hypercertID, attestationID));
       request.fundsLeft -= request.rewardPerReview;
       payable(attester).transfer(request.rewardPerReview);
       emit SubmittedReview(requestName);
