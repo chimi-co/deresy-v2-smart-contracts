@@ -48,7 +48,8 @@ const Web3 = require('web3')
 
 const goerliOptimism = `https://optimism-goerli.infura.io/v3/${process.env.INFURA_API_KEY}`
 const optimism = `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`
-const mnemonic = process.env.MNEMONIC
+const fs = require('fs');
+const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 const web3 = new Web3()
 

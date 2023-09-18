@@ -22,8 +22,8 @@ contract DeresyResolver is SchemaResolver{
   struct ReviewRequest {
     address sponsor;
     address[] reviewers;
-    uint256[] hypercertTargetIDs;
-    string[] targetsIPFSHashes;
+    uint256[] hypercertIDs;
+    string[] hypercertIPFSHashes;
     string formIpfsHash;
     uint256 rewardPerReview;
     Review[] reviews;
@@ -57,7 +57,7 @@ contract DeresyResolver is SchemaResolver{
     bytes32 attestationID = attestation.uid;
 
     bool isRequestOpen = !request.isClosed;
-    bool isValidHypercert = validateHypercertID(request.hypercertTargetIDs, hypercertID);
+    bool isValidHypercert = validateHypercertID(request.hypercertIDs, hypercertID);
     bool hasMatchingAnswerCount = requestForm.questions.length == answers.length;
     bool isUserReviewer = isReviewer(attester, requestName);
     bool hasSubmitted = hasSubmittedReview(attester, requestName, hypercertID);
@@ -79,6 +79,7 @@ contract DeresyResolver is SchemaResolver{
   }
 
   function createReviewForm(bytes32 easSchemaID, string[] memory questions, string[][] memory choices, QuestionType[] memory questionTypes) external  returns (uint256){
+    require(easSchemaID != bytes32(0), "Deresy: EAS Schema ID can't be null");
     require(questions.length > 0, "Deresy: Questions can't be null");
     require(questionTypes.length > 0, "Deresy: Question Types can't be null");
     require(questionTypes.length == questions.length, "Deresy: Questions and types must have the same length");
@@ -89,19 +90,19 @@ contract DeresyResolver is SchemaResolver{
     return reviewForms.length - 1;
   }
 
-  function createRequest(string memory _name, address[] memory reviewers, uint256[] memory hypercertTargetIDs, string[] memory targetsIPFSHashes, string memory formIpfsHash, uint256 rewardPerReview, uint256 reviewFormIndex) external payable{
+  function createRequest(string memory _name, address[] memory reviewers, uint256[] memory hypercertIDs, string[] memory hypercertIPFSHashes, string memory formIpfsHash, uint256 rewardPerReview, uint256 reviewFormIndex) external payable{
     require(reviewers.length > 0,"Deresy: Reviewers cannot be null");
-    require(hypercertTargetIDs.length > 0,"Deresy: Targets cannot be null");
-    require(targetsIPFSHashes.length > 0, "Deresy: Targets IPFS hashes cannot be null");
-    require(hypercertTargetIDs.length == targetsIPFSHashes.length, "Deresy: Targets and targetsIPFSHashes array must have the same length");
+    require(hypercertIDs.length > 0,"Deresy: Hypercert IDs cannot be null");
+    require(hypercertIPFSHashes.length > 0, "Deresy: Hypercerts IPFS hashes cannot be null");
+    require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
     require(reviewFormIndex <= reviewForms.length - 1,"Deresy: ReviewFormIndex invalid");
     require(rewardPerReview > 0,"Deresy: rewardPerReview cannot be empty");
     require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
-    require(msg.value >= ((reviewers.length * hypercertTargetIDs.length) * rewardPerReview),"Deresy: msg.value invalid");
+    require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview),"Deresy: msg.value invalid");
     reviewRequests[_name].sponsor = msg.sender;
     reviewRequests[_name].reviewers = reviewers;
-    reviewRequests[_name].hypercertTargetIDs = hypercertTargetIDs;
-    reviewRequests[_name].targetsIPFSHashes = targetsIPFSHashes;
+    reviewRequests[_name].hypercertIDs = hypercertIDs;
+    reviewRequests[_name].hypercertIPFSHashes = hypercertIPFSHashes;
     reviewRequests[_name].formIpfsHash = formIpfsHash;
     reviewRequests[_name].rewardPerReview = rewardPerReview;
     reviewRequests[_name].isClosed = false;
@@ -120,12 +121,12 @@ contract DeresyResolver is SchemaResolver{
     emit ClosedReviewRequest(_name);
   }
 
-  function getRequest(string memory _name) public view returns (address[] memory reviewers, uint256[] memory hypercertTargetIDs, string[] memory targetsIPFSHashes, string memory formIpfsHash, uint256 rewardPerReview,Review[] memory reviews, uint256 reviewFormIndex,bool isClosed){
+  function getRequest(string memory _name) public view returns (address[] memory reviewers, uint256[] memory hypercertIDs, string[] memory hypercertIPFSHashes, string memory formIpfsHash, uint256 rewardPerReview,Review[] memory reviews, uint256 reviewFormIndex,bool isClosed){
     ReviewRequest memory request = reviewRequests[_name];
-    return (request.reviewers, request.hypercertTargetIDs, request.targetsIPFSHashes, request.formIpfsHash, request.rewardPerReview, request.reviews, request.reviewFormIndex, request.isClosed);
+    return (request.reviewers, request.hypercertIDs, request.hypercertIPFSHashes, request.formIpfsHash, request.rewardPerReview, request.reviews, request.reviewFormIndex, request.isClosed);
   }
 
-  function getReviewForm(uint256 _reviewFormIndex) public view returns(string[] memory, QuestionType[] memory, string[][] memory choices, bytes32){
+  function getReviewForm(uint256 _reviewFormIndex) public view returns(string[] memory questions, QuestionType[] memory questionTypes, string[][] memory choices, bytes32 easSchemaID){
     return (reviewForms[_reviewFormIndex].questions, reviewForms[_reviewFormIndex].questionTypes, reviewForms[_reviewFormIndex].choices, reviewForms[_reviewFormIndex].easSchemaID);
   }
 
