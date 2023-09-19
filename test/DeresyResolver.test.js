@@ -123,6 +123,32 @@ contract('DeresyResolver', (accounts) => {
       assert.equal(request.isClosed, false)
     })
 
+    it("should create a non payable review rquest if data is correct", async() => {
+      let questionsArray = ["Q1", "Q2"]
+      let questionTypesArray = [2, 1]
+      let choicesArray = [["choice1", "choice2"], []]
+      await deresyResolver.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+      let reviewFormsTotal = await deresyResolver.reviewFormsTotal().then(b => { return b.toNumber() })
+
+      let requestName = "RRCfree"
+      let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
+      let hypercertsArray = [hypercertID1, hypercertID2]
+      let hypercertsIPFSHashes = ["hash1", "hash2"]
+      let ipfsHash = "hash"
+      let reviewFormIndex = reviewFormsTotal - 1
+      await truffleAssert.passes(deresyResolver.createNonPayableRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, reviewFormIndex, { from: ownerAddress }))
+      let request = await deresyResolver.getRequest(requestName)
+      assert.deepEqual(request.reviewers, reviewersArray)
+
+      assert.deepEqual(request.hypercertIDs.map(h => h.toString()), hypercertsArray.map(h => h.toString()))
+      assert.deepEqual(request.hypercertIPFSHashes, hypercertsIPFSHashes)
+      assert.equal(request.formIpfsHash, ipfsHash)
+      assert.equal(request.rewardPerReview, 0)
+      assert.equal(request.reviewFormIndex.toNumber(), reviewFormIndex)
+      assert.equal(request.reviews, 0)
+      assert.equal(request.isClosed, false)
+    })
+
     it("should emit a CreatedReviewRequest event when a review request is created", async () => {
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = [2, 1]

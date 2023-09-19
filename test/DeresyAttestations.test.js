@@ -111,6 +111,87 @@ contract('DeresyAttestations', (accounts) => {
       assert.deepEqual(request.reviews, expectedReviews)
     })
 
+    it("should create reviews if data is correct for free requests and emit the corresponding events", async () => {
+      let questionsArray = ["Q1", "Q2"]
+      let questionTypesArray = [2, 1]
+      let choicesArray = [["choice1", "choice2"], []]
+      await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+      let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
+
+      let requestName = "RRS1Free"
+      let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
+      let hypercertsArray = [hypercertID1, hypercertID2]
+      let hypercertsIPFSHashes = ["hash1", "hash2"]
+      let ipfsHash = "hash"
+      let reviewFormIndex = reviewFormsTotal - 1
+      await deresyAttestations.createNonPayableRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, reviewFormIndex, { from: ownerAddress })
+      
+      for (let i = 0; i < reviewersArray.length; i++) {
+        for (let j = 0; j < hypercertsArray.length; j++) {
+          let answersArray = ["choice1", "Yes"]
+          const abi = [
+            { type: 'string', name: 'requestName' },
+            { type: 'uint256', name: 'hypercertID' },
+            { type: 'string[]', name: 'answers' },
+            { type: 'string', name: 'pdfIpfsHash' },
+          ];
+          
+          const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertsArray[j], answersArray, "pdfIpfsHash"]);
+          const attestation = {
+            uid: attestationUID,
+            schema: schemaUID,
+            attester: reviewersArray[i],
+            data: encodedData,
+            time: 1695111673n, 
+            expirationTime: 0n,
+            revocationTime: 0n,
+            refUID: "0x0000000000000000000000000000000000000000000000000000000000000000",
+            recipient: "0x0000000000000000000000000000000000000000",
+            revocable: false 
+          };
+          
+          truffleAssert.eventEmitted(await deresyAttestations.deresyAttestation(attestation, { from: reviewersArray[i], value: 0 }), 'SubmittedReview', (ev) => { return ev._requestName == requestName });
+          
+        }
+      }
+
+      let request = await deresyAttestations.getRequest(requestName)
+      assert.equal(request.reviews.length, hypercertsArray.length * reviewersArray.length)
+      const expectedReviews = [
+        [
+          reviewerAddress1,
+          hypercertID1.toString(),
+          attestationUID
+        ],
+        [
+          reviewerAddress1,
+          hypercertID2.toString(),
+          attestationUID
+        ],
+        [
+          reviewerAddress2,
+          hypercertID1.toString(),
+          attestationUID
+        ],
+        [
+          reviewerAddress2,
+          hypercertID2.toString(),
+          attestationUID
+        ],
+        [
+          reviewerAddress3,
+          hypercertID1.toString(),
+          attestationUID
+        ],
+        [
+          reviewerAddress3,
+          hypercertID2.toString(),
+          attestationUID
+        ],
+      ]
+      assert.deepEqual(request.reviews, expectedReviews)
+    })
+
     it("should not create reviews if attester atttests 2 times for the same hypercertID", async () => {
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = [2, 1]

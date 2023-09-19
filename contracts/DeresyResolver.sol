@@ -70,10 +70,9 @@ contract DeresyResolver is SchemaResolver, Ownable{
 
     if(isValid){
       request.reviews.push(Review(attester,hypercertID, attestationID));
-      request.fundsLeft -= request.rewardPerReview;
-      payable(attester).transfer(request.rewardPerReview);
-      if (address(callbackContract) != address(0)){
-        callbackContract.onReview(attestation, requestName);
+      if (request.rewardPerReview > 0) {
+        request.fundsLeft -= request.rewardPerReview;
+        payable(attester).transfer(request.rewardPerReview);
       }
       emit SubmittedReview(requestName);
     }
@@ -96,26 +95,64 @@ contract DeresyResolver is SchemaResolver, Ownable{
     return reviewForms.length - 1;
   }
 
-  function createRequest(string memory _name, address[] memory reviewers, uint256[] memory hypercertIDs, string[] memory hypercertIPFSHashes, string memory formIpfsHash, uint256 rewardPerReview, uint256 reviewFormIndex) external payable{
-    require(reviewers.length > 0,"Deresy: Reviewers cannot be null");
-    require(hypercertIDs.length > 0,"Deresy: Hypercert IDs cannot be null");
-    require(hypercertIPFSHashes.length > 0, "Deresy: Hypercerts IPFS hashes cannot be null");
-    require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
-    require(reviewFormIndex <= reviewForms.length - 1,"Deresy: ReviewFormIndex invalid");
-    require(rewardPerReview > 0,"Deresy: rewardPerReview cannot be empty");
-    require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
-    require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview),"Deresy: msg.value invalid");
-    reviewRequests[_name].sponsor = msg.sender;
-    reviewRequests[_name].reviewers = reviewers;
-    reviewRequests[_name].hypercertIDs = hypercertIDs;
-    reviewRequests[_name].hypercertIPFSHashes = hypercertIPFSHashes;
-    reviewRequests[_name].formIpfsHash = formIpfsHash;
-    reviewRequests[_name].rewardPerReview = rewardPerReview;
-    reviewRequests[_name].isClosed = false;
-    reviewRequests[_name].fundsLeft = msg.value;
-    reviewRequests[_name].reviewFormIndex = reviewFormIndex;
-    reviewRequestNames.push(_name);
-    emit CreatedReviewRequest(_name);
+  function createReviewRequestCommon(
+    string memory _name,
+    address[] memory reviewers,
+    uint256[] memory hypercertIDs,
+    string[] memory hypercertIPFSHashes,
+    string memory formIpfsHash,
+    uint256 rewardPerReview,
+    uint256 reviewFormIndex,
+    bool isPayable
+  ) internal {
+      require(reviewers.length > 0, "Deresy: Reviewers cannot be null");
+      require(hypercertIDs.length > 0, "Deresy: Hypercert IDs cannot be null");
+      require(hypercertIPFSHashes.length > 0, "Deresy: Hypercerts IPFS hashes cannot be null");
+      require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
+      require(reviewFormIndex <= reviewForms.length - 1, "Deresy: ReviewFormIndex invalid");
+      require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
+
+      if (isPayable) {
+        require(rewardPerReview > 0, "Deresy: rewardPerReview must be greater than zero for payable request");
+        require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview), "Deresy: msg.value invalid");  
+      } else {
+        require(rewardPerReview == 0, "Deresy: rewardPerReview must be zero for non-payable request");
+      }
+      
+      reviewRequests[_name].sponsor = msg.sender;
+      reviewRequests[_name].reviewers = reviewers;
+      reviewRequests[_name].hypercertIDs = hypercertIDs;
+      reviewRequests[_name].hypercertIPFSHashes = hypercertIPFSHashes;
+      reviewRequests[_name].formIpfsHash = formIpfsHash;
+      reviewRequests[_name].rewardPerReview = isPayable ? rewardPerReview : 0;
+      reviewRequests[_name].isClosed = false;
+      reviewRequests[_name].fundsLeft = isPayable ? msg.value : 0;
+      reviewRequests[_name].reviewFormIndex = reviewFormIndex;
+      reviewRequestNames.push(_name);
+      emit CreatedReviewRequest(_name);
+  }
+
+  function createRequest(
+    string memory _name, 
+    address[] memory reviewers, 
+    uint256[] memory hypercertIDs, 
+    string[] memory hypercertIPFSHashes, 
+    string memory formIpfsHash, 
+    uint256 rewardPerReview, 
+    uint256 reviewFormIndex
+  ) external payable {
+      createReviewRequestCommon(_name, reviewers, hypercertIDs, hypercertIPFSHashes, formIpfsHash, rewardPerReview, reviewFormIndex, true);
+  }
+
+  function createNonPayableRequest(
+    string memory _name, 
+    address[] memory reviewers, 
+    uint256[] memory hypercertIDs, 
+    string[] memory hypercertIPFSHashes, 
+    string memory formIpfsHash, 
+    uint256 reviewFormIndex
+  ) external {
+      createReviewRequestCommon(_name, reviewers, hypercertIDs, hypercertIPFSHashes, formIpfsHash, 0, reviewFormIndex, false);
   }
 
   function closeReviewRequest(string memory _name) external{
