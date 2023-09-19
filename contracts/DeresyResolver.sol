@@ -2,8 +2,11 @@
 pragma solidity 0.8.19;
 import { SchemaResolver } from "@ethereum-attestation-service/eas-contracts/contracts/resolver/SchemaResolver.sol";
 import { IEAS, Attestation } from "@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./interfaces/IOnReviewable.sol";
 
-contract DeresyResolver is SchemaResolver{
+contract DeresyResolver is SchemaResolver, Ownable{
+  IOnReviewable public callbackContract;
   enum QuestionType {Text, Checkbox, SingleChoice}
 
   struct reviewForm {
@@ -69,6 +72,9 @@ contract DeresyResolver is SchemaResolver{
       request.reviews.push(Review(attester,hypercertID, attestationID));
       request.fundsLeft -= request.rewardPerReview;
       payable(attester).transfer(request.rewardPerReview);
+      if (address(callbackContract) != address(0)){
+        callbackContract.onReview(attestation, requestName);
+      }
       emit SubmittedReview(requestName);
     }
     return isValid;
@@ -196,5 +202,9 @@ contract DeresyResolver is SchemaResolver{
       }
     }
     return false;
+  }
+
+   function setCallbackContract(address _callbackContractAddress) external onlyOwner {
+    callbackContract = IOnReviewable(_callbackContractAddress);
   }
 }
