@@ -61,9 +61,9 @@ contract DeresyResolver is SchemaResolver{
     bool hasMatchingAnswerCount = requestForm.questions.length == answers.length;
     bool isUserReviewer = isReviewer(attester, requestName);
     bool hasSubmitted = hasSubmittedReview(attester, requestName, hypercertID);
-    bool validSingleChoiceAnswers = validateSingleChoiceAnswers(requestForm, answers);
+    bool validAnswers = validateAnswers(requestForm, answers);
 
-    bool isValid = isRequestOpen && isValidHypercert && hasMatchingAnswerCount && isUserReviewer && hasSubmitted && validSingleChoiceAnswers;
+    bool isValid = isRequestOpen && isValidHypercert && hasMatchingAnswerCount && isUserReviewer && hasSubmitted && validAnswers;
 
     if(isValid){
       request.reviews.push(Review(attester,hypercertID, attestationID));
@@ -160,7 +160,7 @@ contract DeresyResolver is SchemaResolver{
     return notReviewed;
   }
 
-  function validateSingleChoiceAnswers(reviewForm storage form, string[] memory answers) internal view returns (bool) {
+  function validateAnswers(reviewForm storage form, string[] memory answers) internal view returns (bool) {
     for (uint256 i = 0; i < answers.length; i++) {
       if (form.questionTypes[i] == QuestionType.SingleChoice) {
         bool isValidAnswer = false;
@@ -172,6 +172,16 @@ contract DeresyResolver is SchemaResolver{
         }
         
         if (!isValidAnswer) {
+          return false;
+        }
+      } else if(form.questionTypes[i] == QuestionType.Checkbox) {
+        if(keccak256(abi.encodePacked(answers[i])) == keccak256(abi.encodePacked("Yes")) || keccak256(abi.encodePacked(answers[i])) == keccak256(abi.encodePacked("Yes"))) {
+          return true;
+        } else {
+          return false;
+        }
+      } else{
+        if (bytes(answers[i]).length == 0) {
           return false;
         }
       }
