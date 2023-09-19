@@ -514,7 +514,7 @@ contract('DeresyAttestations', (accounts) => {
       const gasEstimate = await web3.eth.getTransactionReceipt(tx.tx)
       let request = await deresyAttestations.getRequest(requestName)
       assert.equal(request.reviews.length, 1)
-      const reviewerAddress2BalanceAfter = await web3.eth.getBalance(reviewerAddress2);
+      const reviewerAddress2BalanceAfter = await web3.eth.getBalance(reviewerAddress2)
       const reviewerAddress2ExpectedBalance = BigInt(reviewerAddress2BalanceBefore) + BigInt(rewardPerReview1) - BigInt(gasEstimate.gasUsed*gasEstimate.effectiveGasPrice)
       assert.equal(reviewerAddress2ExpectedBalance, reviewerAddress2BalanceAfter)
     })
