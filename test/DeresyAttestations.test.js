@@ -599,5 +599,52 @@ contract('DeresyAttestations', (accounts) => {
       const reviewerAddress2ExpectedBalance = BigInt(reviewerAddress2BalanceBefore) + BigInt(rewardPerReview1) - BigInt(gasEstimate.gasUsed*gasEstimate.effectiveGasPrice)
       assert.equal(reviewerAddress2ExpectedBalance, reviewerAddress2BalanceAfter)
     })
+
+    it("should transfer funds to reviewer if attestation is valid", async () => {
+      let questionsArray = ["Q1", "Q2"]
+      let questionTypesArray = [2, 1]
+      let choicesArray = [["choice1", "choice2"], []]
+      await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+      let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
+
+      let requestName = "RRS11"
+      let reviewersArray = [reviewerAddress1, reviewerAddress2]
+      let hypercertsArray = [hypercertID1, hypercertID2]
+      let hypercertsIPFSHashes = ["hash1", "hash2"]
+      let ipfsHash = "hash"
+      let reviewFormIndex = reviewFormsTotal - 1
+      await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+      
+      let answersArray = ["choice1", "Yes"]
+      const abi = [
+        { type: 'string', name: 'requestName' },
+        { type: 'uint256', name: 'hypercertID' },
+        { type: 'string[]', name: 'answers' },
+        { type: 'string', name: 'pdfIpfsHash' },
+      ];
+      
+      const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
+      const attestation = {
+        uid: attestationUID,
+        schema: schemaUID,
+        attester: reviewerAddress2,
+        data: encodedData,
+        time: 1695111673n,
+        expirationTime: 0n,
+        revocationTime: 0n,
+        refUID: "0x0000000000000000000000000000000000000000000000000000000000000000",
+        recipient: "0x0000000000000000000000000000000000000000",
+        revocable: false
+      };
+      
+      const reviewerAddress2BalanceBefore = await web3.eth.getBalance(reviewerAddress2);
+      const tx = await deresyAttestations.deresyAttestation(attestation, { from: reviewerAddress2, value: 0 })
+      const gasEstimate = await web3.eth.getTransactionReceipt(tx.tx)
+      let request = await deresyAttestations.getRequest(requestName)
+      assert.equal(request.reviews.length, 1)
+      const reviewerAddress2BalanceAfter = await web3.eth.getBalance(reviewerAddress2);
+      const reviewerAddress2ExpectedBalance = BigInt(reviewerAddress2BalanceBefore) + BigInt(rewardPerReview1) - BigInt(gasEstimate.gasUsed*gasEstimate.effectiveGasPrice)
+      assert.equal(reviewerAddress2ExpectedBalance, reviewerAddress2BalanceAfter)
+    })
   })
 })

@@ -59,20 +59,16 @@ contract DeresyResolver is SchemaResolver, Ownable{
     address attester = attestation.attester;
     bytes32 attestationID = attestation.uid;
 
-    bool isRequestOpen = !request.isClosed;
-    bool isValidHypercert = validateHypercertID(request.hypercertIDs, hypercertID);
-    bool hasMatchingAnswerCount = requestForm.questions.length == answers.length;
-    bool isUserReviewer = isReviewer(attester, requestName);
-    bool hasSubmitted = hasSubmittedReview(attester, requestName, hypercertID);
-    bool validAnswers = validateAnswers(requestForm, answers);
-
-    bool isValid = isRequestOpen && isValidHypercert && hasMatchingAnswerCount && isUserReviewer && hasSubmitted && validAnswers;
+    bool isValid = !request.isClosed && validateHypercertID(request.hypercertIDs, hypercertID) && requestForm.questions.length == answers.length && isReviewer(attester, requestName) && hasSubmittedReview(attester, requestName, hypercertID) && validateAnswers(requestForm, answers);
 
     if(isValid){
       request.reviews.push(Review(attester,hypercertID, attestationID));
       if (request.rewardPerReview > 0) {
         request.fundsLeft -= request.rewardPerReview;
         payable(attester).transfer(request.rewardPerReview);
+      }
+      if (address(callbackContract) != address(0)){
+        callbackContract.onReview(attestation, requestName);
       }
       emit SubmittedReview(requestName);
     }

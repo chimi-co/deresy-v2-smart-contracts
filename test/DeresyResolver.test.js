@@ -123,7 +123,7 @@ contract('DeresyResolver', (accounts) => {
       assert.equal(request.isClosed, false)
     })
 
-    it("should create a non payable review rquest if data is correct", async() => {
+    it("should create a non payable review request if data is correct", async() => {
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = [2, 1]
       let choicesArray = [["choice1", "choice2"], []]
