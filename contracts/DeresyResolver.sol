@@ -2,8 +2,11 @@
 pragma solidity 0.8.19;
 import { SchemaResolver } from "@ethereum-attestation-service/eas-contracts/contracts/resolver/SchemaResolver.sol";
 import { IEAS, Attestation } from "@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./interfaces/IOnReviewable.sol";
 
-contract DeresyResolver is SchemaResolver{
+contract DeresyResolver is SchemaResolver, Ownable{
+  IOnReviewable public callbackContract;
   enum QuestionType {Text, Checkbox, SingleChoice}
 
   struct reviewForm {
@@ -61,14 +64,16 @@ contract DeresyResolver is SchemaResolver{
     bool hasMatchingAnswerCount = requestForm.questions.length == answers.length;
     bool isUserReviewer = isReviewer(attester, requestName);
     bool hasSubmitted = hasSubmittedReview(attester, requestName, hypercertID);
-    bool validSingleChoiceAnswers = validateSingleChoiceAnswers(requestForm, answers);
+    bool validAnswers = validateAnswers(requestForm, answers);
 
-    bool isValid = isRequestOpen && isValidHypercert && hasMatchingAnswerCount && isUserReviewer && hasSubmitted && validSingleChoiceAnswers;
+    bool isValid = isRequestOpen && isValidHypercert && hasMatchingAnswerCount && isUserReviewer && hasSubmitted && validAnswers;
 
     if(isValid){
       request.reviews.push(Review(attester,hypercertID, attestationID));
-      request.fundsLeft -= request.rewardPerReview;
-      payable(attester).transfer(request.rewardPerReview);
+      if (request.rewardPerReview > 0) {
+        request.fundsLeft -= request.rewardPerReview;
+        payable(attester).transfer(request.rewardPerReview);
+      }
       emit SubmittedReview(requestName);
     }
     return isValid;
@@ -90,26 +95,64 @@ contract DeresyResolver is SchemaResolver{
     return reviewForms.length - 1;
   }
 
-  function createRequest(string memory _name, address[] memory reviewers, uint256[] memory hypercertIDs, string[] memory hypercertIPFSHashes, string memory formIpfsHash, uint256 rewardPerReview, uint256 reviewFormIndex) external payable{
-    require(reviewers.length > 0,"Deresy: Reviewers cannot be null");
-    require(hypercertIDs.length > 0,"Deresy: Hypercert IDs cannot be null");
-    require(hypercertIPFSHashes.length > 0, "Deresy: Hypercerts IPFS hashes cannot be null");
-    require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
-    require(reviewFormIndex <= reviewForms.length - 1,"Deresy: ReviewFormIndex invalid");
-    require(rewardPerReview > 0,"Deresy: rewardPerReview cannot be empty");
-    require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
-    require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview),"Deresy: msg.value invalid");
-    reviewRequests[_name].sponsor = msg.sender;
-    reviewRequests[_name].reviewers = reviewers;
-    reviewRequests[_name].hypercertIDs = hypercertIDs;
-    reviewRequests[_name].hypercertIPFSHashes = hypercertIPFSHashes;
-    reviewRequests[_name].formIpfsHash = formIpfsHash;
-    reviewRequests[_name].rewardPerReview = rewardPerReview;
-    reviewRequests[_name].isClosed = false;
-    reviewRequests[_name].fundsLeft = msg.value;
-    reviewRequests[_name].reviewFormIndex = reviewFormIndex;
-    reviewRequestNames.push(_name);
-    emit CreatedReviewRequest(_name);
+  function createReviewRequestCommon(
+    string memory _name,
+    address[] memory reviewers,
+    uint256[] memory hypercertIDs,
+    string[] memory hypercertIPFSHashes,
+    string memory formIpfsHash,
+    uint256 rewardPerReview,
+    uint256 reviewFormIndex,
+    bool isPayable
+  ) internal {
+      require(reviewers.length > 0, "Deresy: Reviewers cannot be null");
+      require(hypercertIDs.length > 0, "Deresy: Hypercert IDs cannot be null");
+      require(hypercertIPFSHashes.length > 0, "Deresy: Hypercerts IPFS hashes cannot be null");
+      require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
+      require(reviewFormIndex <= reviewForms.length - 1, "Deresy: ReviewFormIndex invalid");
+      require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
+
+      if (isPayable) {
+        require(rewardPerReview > 0, "Deresy: rewardPerReview must be greater than zero for payable request");
+        require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview), "Deresy: msg.value invalid");  
+      } else {
+        require(rewardPerReview == 0, "Deresy: rewardPerReview must be zero for non-payable request");
+      }
+      
+      reviewRequests[_name].sponsor = msg.sender;
+      reviewRequests[_name].reviewers = reviewers;
+      reviewRequests[_name].hypercertIDs = hypercertIDs;
+      reviewRequests[_name].hypercertIPFSHashes = hypercertIPFSHashes;
+      reviewRequests[_name].formIpfsHash = formIpfsHash;
+      reviewRequests[_name].rewardPerReview = isPayable ? rewardPerReview : 0;
+      reviewRequests[_name].isClosed = false;
+      reviewRequests[_name].fundsLeft = isPayable ? msg.value : 0;
+      reviewRequests[_name].reviewFormIndex = reviewFormIndex;
+      reviewRequestNames.push(_name);
+      emit CreatedReviewRequest(_name);
+  }
+
+  function createRequest(
+    string memory _name, 
+    address[] memory reviewers, 
+    uint256[] memory hypercertIDs, 
+    string[] memory hypercertIPFSHashes, 
+    string memory formIpfsHash, 
+    uint256 rewardPerReview, 
+    uint256 reviewFormIndex
+  ) external payable {
+      createReviewRequestCommon(_name, reviewers, hypercertIDs, hypercertIPFSHashes, formIpfsHash, rewardPerReview, reviewFormIndex, true);
+  }
+
+  function createNonPayableRequest(
+    string memory _name, 
+    address[] memory reviewers, 
+    uint256[] memory hypercertIDs, 
+    string[] memory hypercertIPFSHashes, 
+    string memory formIpfsHash, 
+    uint256 reviewFormIndex
+  ) external {
+      createReviewRequestCommon(_name, reviewers, hypercertIDs, hypercertIPFSHashes, formIpfsHash, 0, reviewFormIndex, false);
   }
 
   function closeReviewRequest(string memory _name) external{
@@ -160,7 +203,7 @@ contract DeresyResolver is SchemaResolver{
     return notReviewed;
   }
 
-  function validateSingleChoiceAnswers(reviewForm storage form, string[] memory answers) internal view returns (bool) {
+  function validateAnswers(reviewForm storage form, string[] memory answers) internal view returns (bool) {
     for (uint256 i = 0; i < answers.length; i++) {
       if (form.questionTypes[i] == QuestionType.SingleChoice) {
         bool isValidAnswer = false;
@@ -172,6 +215,16 @@ contract DeresyResolver is SchemaResolver{
         }
         
         if (!isValidAnswer) {
+          return false;
+        }
+      } else if(form.questionTypes[i] == QuestionType.Checkbox) {
+        if(keccak256(abi.encodePacked(answers[i])) == keccak256(abi.encodePacked("Yes")) || keccak256(abi.encodePacked(answers[i])) == keccak256(abi.encodePacked("Yes"))) {
+          return true;
+        } else {
+          return false;
+        }
+      } else{
+        if (bytes(answers[i]).length == 0) {
           return false;
         }
       }
@@ -186,5 +239,9 @@ contract DeresyResolver is SchemaResolver{
       }
     }
     return false;
+  }
+
+   function setCallbackContract(address _callbackContractAddress) external onlyOwner {
+    callbackContract = IOnReviewable(_callbackContractAddress);
   }
 }
