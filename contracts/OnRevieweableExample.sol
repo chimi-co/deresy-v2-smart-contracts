@@ -7,18 +7,24 @@ contract OnReviewableExample is IOnReviewable {
     struct Review {
         address reviewer;
         string requestName;
-        bytes32 attestationID;
+        Attestation attestation;
     }
 
-    mapping(address => Review) private reviews;
+    struct ReviewRequest {
+      string name;
+      Attestation[] attestations;
+    }
+
+    mapping(string => ReviewRequest) private reviewRequests;
 
     function onReview(Attestation calldata attestation, string memory requestName) external override returns (bool) {
-        reviews[attestation.attester] = Review(attestation.attester, requestName, attestation.uid);
+        ReviewRequest storage request = reviewRequests[requestName];
+        request.attestations.push(attestation);
         return true;
     }
 
-    function getReview(address reviewer) public view returns (string memory requestName, bytes32 attestationID) {
-        Review memory review = reviews[reviewer];
-        return (review.requestName, review.attestationID);
+    function getRequestReviews(string memory requestName) public view returns (ReviewRequest memory) {
+        ReviewRequest memory request = reviewRequests[requestName];
+        return request;
     }
 }

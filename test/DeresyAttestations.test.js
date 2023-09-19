@@ -1,7 +1,6 @@
 const DeresyAttestations = artifacts.require('DeresyAttestations')
 const truffleAssert = require("truffle-assertions")
 const { assert } = require('chai')
-const { ethers } = require('ethers');
 const BN = require("bn.js")
 
 function toBN(number) {

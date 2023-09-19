@@ -1,7 +1,11 @@
 const DeresyResolver = artifacts.require('DeresyResolver')
 const truffleAssert = require("truffle-assertions")
 const { assert } = require('chai')
-const { ethers } = require('ethers');
+const BN = require("bn.js")
+
+function toBN(number) {
+  return new BN(number)
+}
 
 contract('DeresyResolver', (accounts) => {
   // Start testing variables ----------
@@ -9,8 +13,8 @@ contract('DeresyResolver', (accounts) => {
   const reviewerAddress1 = accounts[1]    
   const reviewerAddress2 = accounts[2]
   const reviewerAddress3 = accounts[3]
-  const hypercertID1 = ethers.BigNumber.from(10000218199072539564261652963204804198268928n);
-  const hypercertID2 = ethers.BigNumber.from(10000558481439460502725116337812235966480384n);
+  const hypercertID1 = toBN("10000218199072539564261652963204804198268928");
+  const hypercertID2 = toBN("10000558481439460502725116337812235966480384");
   const rewardPerReview1 = "10000000000000000"
   const easContractAddress = "0x4200000000000000000000000000000000000021"
   const easSchemaID = "0x00000000000000000000000000000001"
@@ -113,7 +117,7 @@ contract('DeresyResolver', (accounts) => {
       await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
       let request = await deresyResolver.getRequest(requestName)
       assert.deepEqual(request.reviewers, reviewersArray)
-      //converting to string to avoid BigNumber comparison
+      //converting to string to avoid BN comparison
       assert.deepEqual(request.hypercertIDs.map(h => h.toString()), hypercertsArray.map(h => h.toString()))
       assert.deepEqual(request.hypercertIPFSHashes, hypercertsIPFSHashes)
       assert.equal(request.formIpfsHash, ipfsHash)
@@ -139,7 +143,7 @@ contract('DeresyResolver', (accounts) => {
       await truffleAssert.passes(deresyResolver.createNonPayableRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, reviewFormIndex, { from: ownerAddress }))
       let request = await deresyResolver.getRequest(requestName)
       assert.deepEqual(request.reviewers, reviewersArray)
-
+      //converting to string to avoid BN comparison
       assert.deepEqual(request.hypercertIDs.map(h => h.toString()), hypercertsArray.map(h => h.toString()))
       assert.deepEqual(request.hypercertIPFSHashes, hypercertsIPFSHashes)
       assert.equal(request.formIpfsHash, ipfsHash)
