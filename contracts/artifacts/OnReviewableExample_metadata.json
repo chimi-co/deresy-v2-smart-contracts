@@ -1,0 +1,245 @@
+{
+	"compiler": {
+		"version": "0.8.19+commit.7dd6d404"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "requestName",
+						"type": "string"
+					}
+				],
+				"name": "getRequestReviews",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "name",
+								"type": "string"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bytes32",
+										"name": "uid",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "bytes32",
+										"name": "schema",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "uint64",
+										"name": "time",
+										"type": "uint64"
+									},
+									{
+										"internalType": "uint64",
+										"name": "expirationTime",
+										"type": "uint64"
+									},
+									{
+										"internalType": "uint64",
+										"name": "revocationTime",
+										"type": "uint64"
+									},
+									{
+										"internalType": "bytes32",
+										"name": "refUID",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "address",
+										"name": "recipient",
+										"type": "address"
+									},
+									{
+										"internalType": "address",
+										"name": "attester",
+										"type": "address"
+									},
+									{
+										"internalType": "bool",
+										"name": "revocable",
+										"type": "bool"
+									},
+									{
+										"internalType": "bytes",
+										"name": "data",
+										"type": "bytes"
+									}
+								],
+								"internalType": "struct Attestation[]",
+								"name": "attestations",
+								"type": "tuple[]"
+							}
+						],
+						"internalType": "struct OnReviewableExample.ReviewRequest",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "uid",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "schema",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint64",
+								"name": "time",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "expirationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "revocationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "refUID",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "recipient",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "attester",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "revocable",
+								"type": "bool"
+							},
+							{
+								"internalType": "bytes",
+								"name": "data",
+								"type": "bytes"
+							}
+						],
+						"internalType": "struct Attestation",
+						"name": "attestation",
+						"type": "tuple"
+					},
+					{
+						"internalType": "string",
+						"name": "requestName",
+						"type": "string"
+					}
+				],
+				"name": "onReview",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/OnRevieweableExample.sol": "OnReviewableExample"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@ethereum-attestation-service/eas-contracts/contracts/Common.sol": {
+			"keccak256": "0x4bab9ec76bdb009e9fb505c45a679d39c9e80771eb13ed901029a1068025752a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f7eee2a67a0951a97f07b15335a1553068c7bb5e208bb2a2c0d90cdff32b9280",
+				"dweb:/ipfs/QmVBUCtd2Yocadu7nYZKZKePDyvU1BkYaNdSX2C5kvhCsg"
+			]
+		},
+		"@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol": {
+			"keccak256": "0xd530be686226f3c8d7b02bb59797901620f64749a02228539afc8b082a1ee036",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4ba131bf90235d1a9ce53c013e238a9c1c4fbe670b8eac6b598adc6986ef5f65",
+				"dweb:/ipfs/QmeNjveV6LP8Wp4aRuziwZB4pNaVnBnGw8cbmHjKcwxyRK"
+			]
+		},
+		"@ethereum-attestation-service/eas-contracts/contracts/ISchemaRegistry.sol": {
+			"keccak256": "0xef47e449dd02bd034e26b1dea505ce533906f8462fc674c938ed0e872a68d640",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://62f96084887d44e3e2c91c2b020f861d36ffcce620ee1312ed330653d999930d",
+				"dweb:/ipfs/QmWXrErdfQxoFsJw8L4kaKHqPLX3Zg9ruf9FJvyMRatF8S"
+			]
+		},
+		"@ethereum-attestation-service/eas-contracts/contracts/resolver/ISchemaResolver.sol": {
+			"keccak256": "0xc628c6540da258f76192eaa34c21699c9cbcc4a4029d7ee04e88dc9c18c981fd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a2229a862abb07e2ee6d1d511ab8a4326035d450b67a617b957b1117602ba5d6",
+				"dweb:/ipfs/QmTSV7fYuoxwU8GmsgWttHWTEbiZdVhs846k4B2tficPvP"
+			]
+		},
+		"contracts/OnRevieweableExample.sol": {
+			"keccak256": "0xb926477e74e96b61049e14ae6728828d47ae30a3adb666b7b19faa84764b1cd8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8466c80db410e5f0a362cb3f2dc596e1e604a8de44dee15d307da01a76afc02a",
+				"dweb:/ipfs/QmeEqySiVDJU3bCg1dyCwsy6Q6in5KfuGk8WJKjdnTxofv"
+			]
+		},
+		"contracts/interfaces/IOnReviewable.sol": {
+			"keccak256": "0x37fa17b02a8dce7c81f8c449e57735465ae26e855eafc988d0dcaed60569aec4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7a16d48b718af075cc4a05b57bf9f33505edf880535d1090d8c14639bb16d384",
+				"dweb:/ipfs/QmUTz456rAFFCYzYsqftzLwVXBwzX3oiHCgTk99s8hrNQV"
+			]
+		}
+	},
+	"version": 1
+}

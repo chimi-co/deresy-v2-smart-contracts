@@ -79,6 +79,77 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "uid",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "schema",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint64",
+								"name": "time",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "expirationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "uint64",
+								"name": "revocationTime",
+								"type": "uint64"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "refUID",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "address",
+								"name": "recipient",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "attester",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "revocable",
+								"type": "bool"
+							},
+							{
+								"internalType": "bytes",
+								"name": "data",
+								"type": "bytes"
+							}
+						],
+						"indexed": false,
+						"internalType": "struct Attestation",
+						"name": "_attestation",
+						"type": "tuple"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "_requestName",
+						"type": "string"
+					}
+				],
+				"name": "OnReviewCallback",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "address",
 						"name": "previousOwner",
@@ -973,11 +1044,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0xf87e10aa7071bc191b94123bc31afbd07aef10e2c878392ab70fad87cfc32119",
+			"keccak256": "0xb0005d9e74aacfa4abaa3b9f60a89b85bd4488890eb3b60b5743e1f6c23a5345",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b02e423e10bfc2b916703a153e58fb161f6a74d713e39bf9a6b896d95456b6f3",
-				"dweb:/ipfs/QmSMKoQmKHYNfzZpcAYMMvzeXuC959nD3ie4D8cjLVvmQb"
+				"bzz-raw://df383f801f94ec07ea2d35f2156790035200de5d044b8e20ebcb5ae98517b310",
+				"dweb:/ipfs/QmUUHnPzxHQtu2qmNCwBfPy6ea2hEEW7w6S4YFdf3nd7BR"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {
