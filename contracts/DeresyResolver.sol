@@ -49,6 +49,7 @@ contract DeresyResolver is SchemaResolver, Ownable{
   event CreatedReviewRequest(string _requestName);
   event ClosedReviewRequest(string _requestName);
   event SubmittedReview(string _requestName);
+  event OnReviewCallback(Attestation _attestation, string _requestName);
 
   constructor(IEAS eas) SchemaResolver(eas) {}
 
@@ -69,6 +70,7 @@ contract DeresyResolver is SchemaResolver, Ownable{
       }
       if (address(callbackContract) != address(0)){
         callbackContract.onReview(attestation, requestName);
+        emit OnReviewCallback(attestation, requestName);
       }
       emit SubmittedReview(requestName);
     }
@@ -214,7 +216,7 @@ contract DeresyResolver is SchemaResolver, Ownable{
           return false;
         }
       } else if(form.questionTypes[i] == QuestionType.Checkbox) {
-        if(keccak256(abi.encodePacked(answers[i])) == keccak256(abi.encodePacked("Yes")) || keccak256(abi.encodePacked(answers[i])) == keccak256(abi.encodePacked("Yes"))) {
+        if(keccak256(abi.encodePacked(answers[i])) == keccak256(abi.encodePacked("Yes")) || keccak256(abi.encodePacked(answers[i])) == keccak256(abi.encodePacked("No"))) {
           return true;
         } else {
           return false;

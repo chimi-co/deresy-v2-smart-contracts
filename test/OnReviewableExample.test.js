@@ -8,7 +8,7 @@ function toBN(number) {
   return new BN(number)
 }
 
-contract('DeresyAttestations', (accounts) => {
+contract('OnReviewableExample', (accounts) => {
   // Start testing variables ----------
   const ownerAddress = accounts[0] // Address that deployed the contract
   const reviewerAddress1 = accounts[1]    
@@ -32,7 +32,7 @@ contract('DeresyAttestations', (accounts) => {
   })
 
   // onAttest ----------
-  describe('On Attest', async () => {
+  describe('OnReview', async () => {
     it("should allow setting callback contract by owner", async () => {
       await deresyAttestations.setCallbackContract(onReviewableExample.address, { from: ownerAddress })
       let callbackContractAddress = await deresyAttestations.callbackContract()
@@ -43,7 +43,7 @@ contract('DeresyAttestations', (accounts) => {
       await truffleAssert.reverts(deresyAttestations.setCallbackContract(onReviewableExample.address, { from: reviewerAddress1 }))
     })
 
-    it("should trigger the onReview function in onReviewableExample contract when review is created", async () => {
+    it("should trigger the onReview callback in onReviewableExample contract when review is created", async () => {
       await deresyAttestations.setCallbackContract(onReviewableExample.address, { from: ownerAddress })
 
       let questionsArray = ["Q1", "Q2"]
@@ -108,7 +108,7 @@ contract('DeresyAttestations', (accounts) => {
     })
   })
 
-  it("should NOT trigger the onReview function in onReviewableExample contract when review is created if callback contract is not set", async () => {
+  it("should NOT trigger the onReview callback in onReviewableExample contract when review is created if callback contract is not set", async () => {
     let questionsArray = ["Q1", "Q2"]
     let questionTypesArray = [2, 1]
     let choicesArray = [["choice1", "choice2"], []]
@@ -151,5 +151,128 @@ contract('DeresyAttestations', (accounts) => {
 
     let reviewableRequest = await onReviewableExample.getRequestReviews(requestName)
     assert.equal(reviewableRequest.attestations.length, 0)
+  })
+
+  it("should trigger the onReview function in onReviewableExample contract when review is created", async () => {
+    await deresyAttestations.setCallbackContract(onReviewableExample.address, { from: ownerAddress })
+
+    let questionsArray = ["Q1", "Q2"]
+    let questionTypesArray = [2, 1]
+    let choicesArray = [["choice1", "choice2"], []]
+    await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+    let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
+
+    let requestName = "ORE3"
+    let reviewersArray = [reviewerAddress1, reviewerAddress2]
+    let hypercertsArray = [hypercertID1, hypercertID2]
+    let hypercertsIPFSHashes = ["hash1", "hash2"]
+    let ipfsHash = "hash"
+    let reviewFormIndex = reviewFormsTotal - 1
+    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+
+    let answersArray = ["choice1", "Yes"]
+    const abi = [
+      { type: 'string', name: 'requestName' },
+      { type: 'uint256', name: 'hypercertID' },
+      { type: 'string[]', name: 'answers' },
+      { type: 'string', name: 'pdfIpfsHash' },
+    ];
+    
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
+    const attestation1 = {
+      uid: attestationUID1,
+      schema: schemaUID,
+      attester: reviewerAddress2,
+      data: encodedData,
+      time: 1695111673n,
+      expirationTime: 0n,
+      revocationTime: 0n,
+      refUID: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      recipient: "0x0000000000000000000000000000000000000000",
+      revocable: false
+    };
+    truffleAssert.eventEmitted(await deresyAttestations.deresyAttestation(attestation1, { from: reviewerAddress2, value: 0 }), 'OnReviewCallback', (ev) => { return ev._requestName == requestName && ev._attestation.uid == attestation1.uid });
+  })
+
+  it("should NOT trigger the onReview function in onReviewableExample contract when review is NOT created", async () => {
+    await deresyAttestations.setCallbackContract(onReviewableExample.address, { from: ownerAddress })
+
+    let questionsArray = ["Q1", "Q2"]
+    let questionTypesArray = [2, 1]
+    let choicesArray = [["choice1", "choice2"], []]
+    await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+    let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
+
+    let requestName = "ORE4"
+    let reviewersArray = [reviewerAddress1, reviewerAddress2]
+    let hypercertsArray = [hypercertID1, hypercertID2]
+    let hypercertsIPFSHashes = ["hash1", "hash2"]
+    let ipfsHash = "hash"
+    let reviewFormIndex = reviewFormsTotal - 1
+    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+
+    let answersArray = ["choice1", ""]
+    const abi = [
+      { type: 'string', name: 'requestName' },
+      { type: 'uint256', name: 'hypercertID' },
+      { type: 'string[]', name: 'answers' },
+      { type: 'string', name: 'pdfIpfsHash' },
+    ];
+    
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
+    const attestation1 = {
+      uid: attestationUID1,
+      schema: schemaUID,
+      attester: reviewerAddress2,
+      data: encodedData,
+      time: 1695111673n,
+      expirationTime: 0n,
+      revocationTime: 0n,
+      refUID: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      recipient: "0x0000000000000000000000000000000000000000",
+      revocable: false
+    };
+    truffleAssert.eventNotEmitted(await deresyAttestations.deresyAttestation(attestation1, { from: reviewerAddress2, value: 0 }), 'OnReviewCallback');
+  })
+
+  it("should NOT trigger the onReview function in onReviewableExample contract when callback contract is NOT set", async () => {
+    await deresyAttestations.setCallbackContract("0x0000000000000000000000000000000000000000", { from: ownerAddress })
+
+    let questionsArray = ["Q1", "Q2"]
+    let questionTypesArray = [2, 1]
+    let choicesArray = [["choice1", "choice2"], []]
+    await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+    let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
+
+    let requestName = "ORE5"
+    let reviewersArray = [reviewerAddress1, reviewerAddress2]
+    let hypercertsArray = [hypercertID1, hypercertID2]
+    let hypercertsIPFSHashes = ["hash1", "hash2"]
+    let ipfsHash = "hash"
+    let reviewFormIndex = reviewFormsTotal - 1
+    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+
+    let answersArray = ["choice1", "Yes"]
+    const abi = [
+      { type: 'string', name: 'requestName' },
+      { type: 'uint256', name: 'hypercertID' },
+      { type: 'string[]', name: 'answers' },
+      { type: 'string', name: 'pdfIpfsHash' },
+    ];
+    
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
+    const attestation1 = {
+      uid: attestationUID1,
+      schema: schemaUID,
+      attester: reviewerAddress2,
+      data: encodedData,
+      time: 1695111673n,
+      expirationTime: 0n,
+      revocationTime: 0n,
+      refUID: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      recipient: "0x0000000000000000000000000000000000000000",
+      revocable: false
+    };
+    truffleAssert.eventNotEmitted(await deresyAttestations.deresyAttestation(attestation1, { from: reviewerAddress2, value: 0 }), 'OnReviewCallback');
   })
 })
