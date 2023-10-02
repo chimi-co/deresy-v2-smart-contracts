@@ -2,10 +2,11 @@
 pragma solidity 0.8.19;
 import { SchemaResolver } from "@ethereum-attestation-service/eas-contracts/contracts/resolver/SchemaResolver.sol";
 import { IEAS, Attestation } from "@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IOnReviewable.sol";
 
-contract DeresyResolver is SchemaResolver, Ownable{
+contract DeresyResolver is SchemaResolver, Ownable {
   IOnReviewable public callbackContract;
   enum QuestionType {Text, Checkbox, SingleChoice}
 
@@ -31,12 +32,15 @@ contract DeresyResolver is SchemaResolver, Ownable{
     uint256 rewardPerReview;
     Review[] reviews;
     bool isClosed;
+    address paymentTokenAddress;
     uint256 fundsLeft;
     uint256 reviewFormIndex;
     string name;
   }
 
   mapping(string => ReviewRequest) private reviewRequests;
+  
+  mapping(address => bool) public isTokenWhitelisted;
 
   string[] reviewRequestNames;
   uint256 public reviewFormsTotal;
@@ -51,7 +55,17 @@ contract DeresyResolver is SchemaResolver, Ownable{
   event SubmittedReview(string _requestName);
   event OnReviewCallback(Attestation _attestation, string _requestName);
 
-  constructor(IEAS eas) SchemaResolver(eas) {}
+  constructor(IEAS eas) SchemaResolver(eas) {
+    isTokenWhitelisted[address(0)] = true;
+  }
+
+  function whitelistToken(address tokenAddress) external onlyOwner {
+    isTokenWhitelisted[tokenAddress] = true;
+  }
+
+  function unwhitelistToken(address tokenAddress) external onlyOwner {
+      isTokenWhitelisted[tokenAddress] = false;
+  }
 
   function onAttest(Attestation calldata attestation, uint256 /*value*/) internal override returns (bool) {
     (string memory requestName, uint256 hypercertID, string[] memory answers,) = abi.decode(attestation.data, (string, uint256, string[], string));
@@ -66,8 +80,14 @@ contract DeresyResolver is SchemaResolver, Ownable{
       request.reviews.push(Review(attester,hypercertID, attestationID));
       if (request.rewardPerReview > 0) {
         request.fundsLeft -= request.rewardPerReview;
-        payable(attester).transfer(request.rewardPerReview);
+
+        if (request.paymentTokenAddress == address(0)) {
+          payable(attester).transfer(request.rewardPerReview);
+        } else {
+          require(IERC20(request.paymentTokenAddress).transfer(attester, request.rewardPerReview), "Token transfer failed");
+        }
       }
+
       if (address(callbackContract) != address(0)){
         callbackContract.onReview(attestation, requestName);
         emit OnReviewCallback(attestation, requestName);
@@ -101,6 +121,7 @@ contract DeresyResolver is SchemaResolver, Ownable{
     string memory formIpfsHash,
     uint256 rewardPerReview,
     uint256 reviewFormIndex,
+    address paymentTokenAddress,
     bool isPayable
   ) internal {
       require(reviewers.length > 0, "Deresy: Reviewers cannot be null");
@@ -109,10 +130,11 @@ contract DeresyResolver is SchemaResolver, Ownable{
       require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
       require(reviewFormIndex <= reviewForms.length - 1, "Deresy: ReviewFormIndex invalid");
       require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
+      require(isTokenWhitelisted[paymentTokenAddress], "Token not whitelisted");
 
       if (isPayable) {
+        require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview), "Deresy: msg.value invalid");
         require(rewardPerReview > 0, "Deresy: rewardPerReview must be greater than zero for payable request");
-        require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview), "Deresy: msg.value invalid");  
       } else {
         require(rewardPerReview == 0, "Deresy: rewardPerReview must be zero for non-payable request");
       }
@@ -124,6 +146,7 @@ contract DeresyResolver is SchemaResolver, Ownable{
       reviewRequests[_name].formIpfsHash = formIpfsHash;
       reviewRequests[_name].rewardPerReview = isPayable ? rewardPerReview : 0;
       reviewRequests[_name].isClosed = false;
+      reviewRequests[_name].paymentTokenAddress = paymentTokenAddress;
       reviewRequests[_name].fundsLeft = isPayable ? msg.value : 0;
       reviewRequests[_name].reviewFormIndex = reviewFormIndex;
       reviewRequestNames.push(_name);
@@ -137,9 +160,20 @@ contract DeresyResolver is SchemaResolver, Ownable{
     string[] memory hypercertIPFSHashes, 
     string memory formIpfsHash, 
     uint256 rewardPerReview, 
+    address paymentTokenAddress,
     uint256 reviewFormIndex
   ) external payable {
-      createReviewRequestCommon(_name, reviewers, hypercertIDs, hypercertIPFSHashes, formIpfsHash, rewardPerReview, reviewFormIndex, true);
+      createReviewRequestCommon(
+        _name,
+        reviewers,
+        hypercertIDs,
+        hypercertIPFSHashes,
+        formIpfsHash,
+        rewardPerReview,
+        reviewFormIndex,
+        paymentTokenAddress,
+        true
+      );
   }
 
   function createNonPayableRequest(
@@ -150,7 +184,17 @@ contract DeresyResolver is SchemaResolver, Ownable{
     string memory formIpfsHash, 
     uint256 reviewFormIndex
   ) external {
-      createReviewRequestCommon(_name, reviewers, hypercertIDs, hypercertIPFSHashes, formIpfsHash, 0, reviewFormIndex, false);
+      createReviewRequestCommon(
+        _name, 
+        reviewers, 
+        hypercertIDs, 
+        hypercertIPFSHashes,
+        formIpfsHash,
+        0,
+        reviewFormIndex,
+        address(0),
+        false
+      );
   }
 
   function closeReviewRequest(string memory _name) external{
