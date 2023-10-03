@@ -135,6 +135,11 @@ contract DeresyResolver is SchemaResolver, Ownable {
       if (isPayable) {
         require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview), "Deresy: msg.value invalid");
         require(rewardPerReview > 0, "Deresy: rewardPerReview must be greater than zero for payable request");
+
+        // If is not the ETH Token Address then
+        if (paymentTokenAddress != address(0)) {
+          require(IERC20(paymentTokenAddress).transferFrom(msg.sender, address(this), msg.value), "Deresy: Token transfer failed");
+        }
       } else {
         require(rewardPerReview == 0, "Deresy: rewardPerReview must be zero for non-payable request");
       }
