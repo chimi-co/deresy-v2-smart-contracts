@@ -28,6 +28,9 @@ contract('DeresyMockToken', (accounts) => {
   // Load contract
   before(async ()=> {            
     deresyResolver = await DeresyResolver.new(easContractAddress)
+
+    await deresyResolver.unpause();
+
     deresyMockTokens = await DeresyMockToken.new()
 
     await deresyMockTokens.mint(ownerAddress, web3.utils.toWei("100", "ether"));

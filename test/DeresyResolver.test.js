@@ -460,7 +460,7 @@ contract('DeresyResolver', (accounts) => {
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       let reviewFormIndex = 0
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     });
   })
 })
