@@ -55,28 +55,23 @@ contract DeresyResolver is SchemaResolver, Ownable{
 
   constructor(IEAS eas) SchemaResolver(eas) {}
 
-  modifier whenIsNotPaused {
+  modifier whenUnpaused {
     require(!paused, "Contract is paused");
     _;
   }
 
-  modifier whenIsPaused() {
-      require(paused, "Contract is not paused");
-      _;
-  }
-
-  function pause() external onlyOwner whenIsNotPaused {
+  function pause() external onlyOwner whenUnpaused {
     paused = true;
   }
 
-  function unpause() external onlyOwner whenIsPaused {
+  function unpause() external onlyOwner {
     paused = false;
   }
 
   function onAttest(
     Attestation calldata attestation,
     uint256 /*value*/
-  ) internal override whenIsNotPaused returns (bool) {
+  ) internal override whenUnpaused returns (bool) {
     (string memory requestName, uint256 hypercertID, string[] memory answers,) = abi.decode(attestation.data, (string, uint256, string[], string));
     ReviewRequest storage request = reviewRequests[requestName];
     reviewForm storage requestForm = reviewForms[request.reviewFormIndex];
@@ -104,7 +99,7 @@ contract DeresyResolver is SchemaResolver, Ownable{
     return true;
   }
 
-  function createReviewForm(bytes32 easSchemaID, string[] memory questions, string[][] memory choices, QuestionType[] memory questionTypes) external whenIsNotPaused returns (uint256){
+  function createReviewForm(bytes32 easSchemaID, string[] memory questions, string[][] memory choices, QuestionType[] memory questionTypes) external whenUnpaused returns (uint256){
     require(easSchemaID != bytes32(0), "Deresy: EAS Schema ID can't be null");
     require(questions.length > 0, "Deresy: Questions can't be null");
     require(questionTypes.length > 0, "Deresy: Question Types can't be null");
@@ -161,7 +156,7 @@ contract DeresyResolver is SchemaResolver, Ownable{
     string memory formIpfsHash, 
     uint256 rewardPerReview, 
     uint256 reviewFormIndex
-  ) external payable whenIsNotPaused {
+  ) external payable whenUnpaused {
       createReviewRequestCommon(_name, reviewers, hypercertIDs, hypercertIPFSHashes, formIpfsHash, rewardPerReview, reviewFormIndex, true);
   }
 
@@ -172,7 +167,7 @@ contract DeresyResolver is SchemaResolver, Ownable{
     string[] memory hypercertIPFSHashes, 
     string memory formIpfsHash, 
     uint256 reviewFormIndex
-  ) external whenIsNotPaused {
+  ) external whenUnpaused {
       createReviewRequestCommon(_name, reviewers, hypercertIDs, hypercertIPFSHashes, formIpfsHash, 0, reviewFormIndex, false);
   }
 
