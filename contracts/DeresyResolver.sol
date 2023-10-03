@@ -114,36 +114,44 @@ contract DeresyResolver is SchemaResolver, Ownable {
   }
 
   function createReviewRequestCommon(
-    string memory _name,
-    address[] memory reviewers,
-    uint256[] memory hypercertIDs,
-    string[] memory hypercertIPFSHashes,
-    string memory formIpfsHash,
-    uint256 rewardPerReview,
-    uint256 reviewFormIndex,
-    address paymentTokenAddress,
-    bool isPayable
+      string memory _name,
+      address[] memory reviewers,
+      uint256[] memory hypercertIDs,
+      string[] memory hypercertIPFSHashes,
+      string memory formIpfsHash,
+      uint256 rewardPerReview,
+      uint256 reviewFormIndex,
+      address paymentTokenAddress,
+      bool isPayable
   ) internal {
-      require(reviewers.length > 0, "Deresy: Reviewers cannot be null");
-      require(hypercertIDs.length > 0, "Deresy: Hypercert IDs cannot be null");
-      require(hypercertIPFSHashes.length > 0, "Deresy: Hypercerts IPFS hashes cannot be null");
-      require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
-      require(reviewFormIndex <= reviewForms.length - 1, "Deresy: ReviewFormIndex invalid");
-      require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
-      require(isTokenWhitelisted[paymentTokenAddress], "Token not whitelisted");
+    require(
+        reviewers.length > 0 &&
+        hypercertIDs.length > 0 &&
+        hypercertIPFSHashes.length > 0 &&
+        hypercertIDs.length == hypercertIPFSHashes.length &&
+        reviewFormIndex <= reviewForms.length - 1 &&
+        reviewRequests[_name].sponsor == address(0) &&
+        isTokenWhitelisted[paymentTokenAddress],
+        "Deresy: Invalid parameters or duplicates"
+    );
 
-      if (isPayable) {
-        require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview), "Deresy: msg.value invalid");
-        require(rewardPerReview > 0, "Deresy: rewardPerReview must be greater than zero for payable request");
+    if (isPayable) {
+        require(
+            msg.value >= reviewers.length * hypercertIDs.length * rewardPerReview &&
+            rewardPerReview > 0,
+            "Deresy: Payment details invalid"
+        );
 
-        // If is not the ETH Token Address then
         if (paymentTokenAddress != address(0)) {
-          require(IERC20(paymentTokenAddress).transferFrom(msg.sender, address(this), msg.value), "Deresy: Token transfer failed");
+            require(
+                IERC20(paymentTokenAddress).transferFrom(msg.sender, address(this), msg.value),
+                "Deresy: Token transfer failed"
+            );
         }
-      } else {
+    } else {
         require(rewardPerReview == 0, "Deresy: rewardPerReview must be zero for non-payable request");
-      }
-      
+    }
+    
       reviewRequests[_name].sponsor = msg.sender;
       reviewRequests[_name].reviewers = reviewers;
       reviewRequests[_name].hypercertIDs = hypercertIDs;
@@ -155,7 +163,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
       reviewRequests[_name].fundsLeft = isPayable ? msg.value : 0;
       reviewRequests[_name].reviewFormIndex = reviewFormIndex;
       reviewRequestNames.push(_name);
-      emit CreatedReviewRequest(_name);
+    emit CreatedReviewRequest(_name);
   }
 
   function createRequest(
@@ -186,7 +194,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     address[] memory reviewers, 
     uint256[] memory hypercertIDs, 
     string[] memory hypercertIPFSHashes, 
-    string memory formIpfsHash, 
+    string memory formIpfsHash,
     uint256 reviewFormIndex
   ) external {
       createReviewRequestCommon(

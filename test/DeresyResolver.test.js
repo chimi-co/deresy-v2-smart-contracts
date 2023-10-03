@@ -13,6 +13,7 @@ contract('DeresyResolver', (accounts) => {
   const reviewerAddress1 = accounts[1]    
   const reviewerAddress2 = accounts[2]
   const reviewerAddress3 = accounts[3]
+  const zeroAddress = "0x0000000000000000000000000000000000000000";
   const hypercertID1 = toBN("10000218199072539564261652963204804198268928");
   const hypercertID2 = toBN("10000558481439460502725116337812235966480384");
   const rewardPerReview1 = "10000000000000000"
@@ -114,7 +115,7 @@ contract('DeresyResolver', (accounts) => {
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
-      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
       let request = await deresyResolver.getRequest(requestName)
       assert.deepEqual(request.reviewers, reviewersArray)
       //converting to string to avoid BN comparison
@@ -166,7 +167,7 @@ contract('DeresyResolver', (accounts) => {
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
-      let tx = await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+      let tx = await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
       truffleAssert.eventEmitted(tx, 'CreatedReviewRequest', (ev) => {
         return ev._requestName = requestName;
       });
@@ -186,7 +187,7 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
 
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1  * hypercertsArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1  * hypercertsArray.length }))
     })
 
     it("should revert if hypercerts array is null", async () => {
@@ -203,7 +204,7 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
 
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length }))
     })
 
     it("should revert if reviewFormIndex is invalid", async () => {
@@ -214,7 +215,7 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = "hash"
       let reviewFormIndex = 100000
 
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     })
 
     it("should revert if rewardPerReview <= 0", async () => {
@@ -231,7 +232,7 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
 
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, 0, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, 0, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     })
 
     it("should revert if name is duplicated", async () => {
@@ -248,8 +249,8 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
       
-      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     })
 
     it("should revert if msg.value is invalid", async () => {
@@ -266,7 +267,7 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
 
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 }))
     })
 
     it("should pass if ipfsHash is empty", async () => {
@@ -283,7 +284,7 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = ""
       let reviewFormIndex = reviewFormsTotal - 1
       
-      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     })
 
     it("should revert if hypercertsIPFSHashes array is empty", async () => {
@@ -300,7 +301,7 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = ""
       let reviewFormIndex = reviewFormsTotal - 1
       
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     })
 
     it("should revert if hypercertsIPFSHashes and hypercertIDs arrays have different length", async () => {
@@ -317,7 +318,7 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = ""
       let reviewFormIndex = reviewFormsTotal - 1
       
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     })
 
     it("should pass if hypercertsIPFSHashes array contains empty strings", async () => {
@@ -334,7 +335,7 @@ contract('DeresyResolver', (accounts) => {
       let ipfsHash = ""
       let reviewFormIndex = reviewFormsTotal - 1
       
-      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     })
   })
 
@@ -353,7 +354,7 @@ contract('DeresyResolver', (accounts) => {
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
-      await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+      await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
       
       await truffleAssert.passes(deresyResolver.closeReviewRequest(requestName, { from: ownerAddress, value: 0 }))
       let request = await deresyResolver.getRequest(requestName)
@@ -373,7 +374,7 @@ contract('DeresyResolver', (accounts) => {
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
-      await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+      await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
       
       let tx = await deresyResolver.closeReviewRequest(requestName, { from: ownerAddress, value: 0 })
       truffleAssert.eventEmitted(tx, 'ClosedReviewRequest', (ev) => {
@@ -394,7 +395,7 @@ contract('DeresyResolver', (accounts) => {
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
-      await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+      await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
       
       await truffleAssert.reverts(deresyResolver.closeReviewRequest(requestName, { from: reviewerAddress1, value: 0 }))
       let request = await deresyResolver.getRequest(requestName)
@@ -414,7 +415,7 @@ contract('DeresyResolver', (accounts) => {
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
-      await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+      await deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
       deresyResolver.closeReviewRequest(requestName, { from: ownerAddress, value: 0 })
       await truffleAssert.reverts(deresyResolver.closeReviewRequest(requestName, { from: ownerAddress, value: 0 }))
       let request = await deresyResolver.getRequest(requestName)
