@@ -735,6 +735,26 @@
 			},
 			{
 				"inputs": [],
+				"name": "pause",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "paused",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -846,6 +866,13 @@
 					}
 				],
 				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "unpause",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1044,11 +1071,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0xb0005d9e74aacfa4abaa3b9f60a89b85bd4488890eb3b60b5743e1f6c23a5345",
+			"keccak256": "0xfb70a27ddcff1f523a934329f725dcbf4031cf0d781808847ce95e34640f5a06",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://df383f801f94ec07ea2d35f2156790035200de5d044b8e20ebcb5ae98517b310",
-				"dweb:/ipfs/QmUUHnPzxHQtu2qmNCwBfPy6ea2hEEW7w6S4YFdf3nd7BR"
+				"bzz-raw://b0adad45115bcce518539ee18c7924b9ffd3299729e94d24bee59e2fb7b302ca",
+				"dweb:/ipfs/QmRzQgfT3R8NnQ6D74Xi9P2UAeWnwNnGDrPmWYdEyjjNdp"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {

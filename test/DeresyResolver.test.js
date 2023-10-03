@@ -24,6 +24,7 @@ contract('DeresyResolver', (accounts) => {
   // Load contract
   before(async ()=> {            
     deresyResolver = await DeresyResolver.new(easContractAddress)
+    await deresyResolver.unpause();
   })
 
   // Create Review Form ----------
@@ -421,5 +422,45 @@ contract('DeresyResolver', (accounts) => {
       let request = await deresyResolver.getRequest(requestName)
       assert.equal(request.isClosed, true)
     })
+  })
+  describe('Paused/Not Paused Functionality', async () => {
+    const notOwner = "0x0582748BEd4B4635D07991Fc14F546Fdfc9617ae"
+
+    it("should be paused", async () => {
+      await deresyResolver.pause();
+      const isPaused = await deresyResolver.paused();
+      assert.equal(isPaused, true);
+    });
+    
+    it("should only allow OWNER to unpause", async () => {
+      await truffleAssert.reverts(deresyResolver.unpause({ from: notOwner }));
+    });
+    
+    it("should be able to unpause", async () => {
+      await deresyResolver.unpause();
+      let isPaused = await deresyResolver.paused();
+      assert.equal(isPaused, false);
+      
+      await deresyResolver.pause();
+      isPaused = await deresyResolver.paused();
+      assert.equal(isPaused, true);
+    });
+
+    it("should not let you create review form when contract is paused", async() => {
+      let questionsArray = ["Q1", "Q2"]
+      let questionTypesArray = [2, 1]
+      let choicesArray = [["choice1", "choice2"], []]
+      await truffleAssert.reverts(deresyResolver.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 }))
+    });
+
+    it("should not let you create request when contract is paused", async() => {
+      let requestName = "RRC1-PAUSED"
+      let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
+      let hypercertsArray = [hypercertID1, hypercertID2]
+      let hypercertsIPFSHashes = ["hash1", "hash2"]
+      let ipfsHash = "hash"
+      let reviewFormIndex = 0
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+    });
   })
 })

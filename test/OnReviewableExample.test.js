@@ -29,6 +29,7 @@ contract('OnReviewableExample', (accounts) => {
   // Load contract
   before(async ()=> {            
     deresyAttestations = await DeresyAttestations.new(easContractAddress)
+    await deresyAttestations.unpause()
     onReviewableExample = await OnReviewableExample.new()
   })
 
