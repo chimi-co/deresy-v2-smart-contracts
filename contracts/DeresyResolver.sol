@@ -255,6 +255,12 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return reviewRequestNames;
   }
 
+  function getRequestReviewForm(string memory _name) public view returns(string[] memory, QuestionType[] memory, string[][] memory choices, bytes32){
+    ReviewRequest storage request = reviewRequests[_name];
+    reviewForm storage requestForm = reviewForms[request.reviewFormIndex];
+     return (requestForm.questions, requestForm.questionTypes, requestForm.choices, requestForm.easSchemaID);
+  }
+
   function isReviewer(address reviewerAddress, string memory _name) internal view returns (bool) {
     bool reviewerFound = false;
     for (uint i = 0; i < reviewRequests[_name].reviewers.length; i++){
