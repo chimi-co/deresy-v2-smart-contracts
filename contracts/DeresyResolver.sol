@@ -40,7 +40,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
   mapping(string => ReviewRequest) private reviewRequests;
   
-  mapping(address => bool) public isTokenWhitelisted;
+  address[] whitelistedTokens;
 
   string[] reviewRequestNames;
   uint256 public reviewFormsTotal;
@@ -58,15 +58,34 @@ contract DeresyResolver is SchemaResolver, Ownable {
   event OnReviewCallback(Attestation _attestation, string _requestName);
 
   constructor(IEAS eas) SchemaResolver(eas) {
-    isTokenWhitelisted[address(0)] = true;
+    whitelistedTokens.push(address(0));
+  }
+
+  function isTokenWhitelisted(address tokenAddress) public view returns (bool) {
+    for (uint i = 0; i < whitelistedTokens.length; i++) {
+      if (whitelistedTokens[i] == tokenAddress) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   function whitelistToken(address tokenAddress) external onlyOwner {
-    isTokenWhitelisted[tokenAddress] = true;
+    require(!isTokenWhitelisted(tokenAddress), "Token already whitelisted");
+    whitelistedTokens.push(tokenAddress);
   }
 
   function unwhitelistToken(address tokenAddress) external onlyOwner {
-      isTokenWhitelisted[tokenAddress] = false;
+    require(isTokenWhitelisted(tokenAddress), "Token not in whitelist");
+
+    for (uint i = 0; i < whitelistedTokens.length; i++) {
+      if (whitelistedTokens[i] == tokenAddress) {
+        whitelistedTokens[i] = whitelistedTokens[whitelistedTokens.length - 1];
+        whitelistedTokens.pop();
+        break;
+      }
+    }
   }
 
   modifier whenUnpaused {
@@ -148,7 +167,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
     require(reviewFormIndex <= reviewForms.length - 1, "Deresy: ReviewFormIndex invalid");
     require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
-    require(isTokenWhitelisted[paymentTokenAddress],"Deresy: Token is not whitelisted");
+    require(isTokenWhitelisted(paymentTokenAddress),"Deresy: Token is not whitelisted");
 
     uint256 tokenFundsAmount;
 
