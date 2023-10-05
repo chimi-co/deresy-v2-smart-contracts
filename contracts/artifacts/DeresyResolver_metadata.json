@@ -359,6 +359,11 @@
 						"type": "uint256"
 					},
 					{
+						"internalType": "address",
+						"name": "paymentTokenAddress",
+						"type": "address"
+					},
+					{
 						"internalType": "uint256",
 						"name": "reviewFormIndex",
 						"type": "uint256"
@@ -566,6 +571,25 @@
 					}
 				],
 				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "isTokenWhitelisted",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -878,6 +902,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "unwhitelistToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "version",
 				"outputs": [
@@ -888,6 +925,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "whitelistToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -1038,6 +1088,14 @@
 				"dweb:/ipfs/QmPHXMSXj99XjSVM21YsY6aNtLLjLVXDbyN76J5HQYvvrz"
 			]
 		},
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5",
+				"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53"
+			]
+		},
 		"@openzeppelin/contracts/utils/Context.sol": {
 			"keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
 			"license": "MIT",
@@ -1071,11 +1129,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0xfb70a27ddcff1f523a934329f725dcbf4031cf0d781808847ce95e34640f5a06",
+			"keccak256": "0xa8e10290a81b7006325b5b23386bdca39b6389380952dfa9f3c6232e61cc350b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b0adad45115bcce518539ee18c7924b9ffd3299729e94d24bee59e2fb7b302ca",
-				"dweb:/ipfs/QmRzQgfT3R8NnQ6D74Xi9P2UAeWnwNnGDrPmWYdEyjjNdp"
+				"bzz-raw://88bf8a692c7f25f40c44b0201350aff7929d1bcaf9072d66a120932f449c9032",
+				"dweb:/ipfs/QmfW2zP1hMrr2mCXEtHSWTBEcTgPKQnWxQCc8sZWmBUWFy"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {

@@ -54,7 +54,7 @@ contract('DeresyMockToken', (accounts) => {
 
       await deresyMockTokens.approve(deresyResolver.address, web3.utils.toWei("1", "ether"));
 
-      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, deresyMockTokens.address, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, deresyMockTokens.address, reviewFormIndex, { from: ownerAddress, value: 0 }))
 
       const balanceAfter = await deresyMockTokens.balanceOf(ownerAddress);
       assert.equal(balanceAfter.toString(), web3.utils.toWei("99.94", "ether"));
