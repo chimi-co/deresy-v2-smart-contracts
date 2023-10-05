@@ -941,6 +941,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "whitelistedTokens",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"stateMutability": "payable",
 				"type": "receive"
 			}
@@ -1129,11 +1148,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x9291f91d64e93a5dcd59663750848a6ef0c3ae3b24504cdc6600e5318e956ba6",
+			"keccak256": "0x1edc05e2d3c042118eb83897bb1684c5a33ea65486248bcec4be0af38537995e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://aa1a75d21ca2591ae6e5dfeb5623a8df2feb664584c1f77084ce10bacda37db6",
-				"dweb:/ipfs/QmepurKQhr9Q61i2tk4H3D6uDQCs8kLoCTEkkyGZVdHdQC"
+				"bzz-raw://371a183fa520e1798ac5f37bc3fe9b45f1569a9eaaad1cb73948a752eb7b1131",
+				"dweb:/ipfs/QmchGuoHHiYZsukZkES5Wh5oJBcgWoLStdnguXaEsYMuyZ"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {

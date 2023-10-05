@@ -40,7 +40,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
   mapping(string => ReviewRequest) private reviewRequests;
   
-  address[] whitelistedTokens;
+  address[] public whitelistedTokens;
 
   string[] reviewRequestNames;
   uint256 public reviewFormsTotal;
