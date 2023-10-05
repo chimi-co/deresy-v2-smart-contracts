@@ -40,7 +40,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
   mapping(string => ReviewRequest) private reviewRequests;
   
-  address[] public whitelistedTokens;
+  address[] whitelistedTokens;
 
   string[] reviewRequestNames;
   uint256 public reviewFormsTotal;
@@ -272,6 +272,10 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
   function getReviewRequestsNames() public view returns(string[] memory){
     return reviewRequestNames;
+  }
+
+  function getWhitelistedTokens() public view returns(address[] memory) {
+    return whitelistedTokens;
   }
 
   function getRequestReviewForm(string memory _name) public view returns(string[] memory, QuestionType[] memory, string[][] memory choices, bytes32){

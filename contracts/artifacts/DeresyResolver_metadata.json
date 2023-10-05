@@ -562,6 +562,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "getWhitelistedTokens",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "isPayable",
 				"outputs": [
 					{
@@ -941,25 +954,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "whitelistedTokens",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"stateMutability": "payable",
 				"type": "receive"
 			}
@@ -1148,11 +1142,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x1edc05e2d3c042118eb83897bb1684c5a33ea65486248bcec4be0af38537995e",
+			"keccak256": "0xa69828a5bdd4677838b494a7e88f8ff39fcc096ffce3ccaa2d5fa511e36dbf27",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://371a183fa520e1798ac5f37bc3fe9b45f1569a9eaaad1cb73948a752eb7b1131",
-				"dweb:/ipfs/QmchGuoHHiYZsukZkES5Wh5oJBcgWoLStdnguXaEsYMuyZ"
+				"bzz-raw://feceafea0a9d667add7d726aeb2899504836ce113cc913a9c444acab544a2af9",
+				"dweb:/ipfs/QmYVdXzcb5oT8aKa4SzmU9jaFFUHS4pZrVbQzAnidaWJtr"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {
