@@ -1026,7 +1026,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1129,11 +1129,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0xa8e10290a81b7006325b5b23386bdca39b6389380952dfa9f3c6232e61cc350b",
+			"keccak256": "0x46b6aa5f90d554b2f737e713cfa3c9f23a638dcd333ead34583e1b5802ad32a7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://88bf8a692c7f25f40c44b0201350aff7929d1bcaf9072d66a120932f449c9032",
-				"dweb:/ipfs/QmfW2zP1hMrr2mCXEtHSWTBEcTgPKQnWxQCc8sZWmBUWFy"
+				"bzz-raw://6949029a237fe1f25dce1fe7123650e4139dd32836f924500e95d6ccae531168",
+				"dweb:/ipfs/QmQh3LqJUmNnWoDVe7keAxNsRQ53W3Vh6cJ3AmoqtgLkuc"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {
