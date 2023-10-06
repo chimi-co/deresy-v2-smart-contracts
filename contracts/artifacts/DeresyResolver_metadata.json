@@ -359,6 +359,11 @@
 						"type": "uint256"
 					},
 					{
+						"internalType": "address",
+						"name": "paymentTokenAddress",
+						"type": "address"
+					},
+					{
 						"internalType": "uint256",
 						"name": "reviewFormIndex",
 						"type": "uint256"
@@ -469,6 +474,11 @@
 						"internalType": "bool",
 						"name": "isClosed",
 						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "paymentTokenAddress",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -557,6 +567,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "getWhitelistedTokens",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "isPayable",
 				"outputs": [
 					{
@@ -566,6 +589,25 @@
 					}
 				],
 				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "isTokenWhitelisted",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -878,6 +920,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "unwhitelistToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "version",
 				"outputs": [
@@ -888,6 +943,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "whitelistToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -976,7 +1044,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1038,6 +1106,14 @@
 				"dweb:/ipfs/QmPHXMSXj99XjSVM21YsY6aNtLLjLVXDbyN76J5HQYvvrz"
 			]
 		},
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5",
+				"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53"
+			]
+		},
 		"@openzeppelin/contracts/utils/Context.sol": {
 			"keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
 			"license": "MIT",
@@ -1071,11 +1147,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0xfb70a27ddcff1f523a934329f725dcbf4031cf0d781808847ce95e34640f5a06",
+			"keccak256": "0x597d01b76804fd02ae290bfaff713cd016aa2b728010d3b816b5d72a90584a6b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b0adad45115bcce518539ee18c7924b9ffd3299729e94d24bee59e2fb7b302ca",
-				"dweb:/ipfs/QmRzQgfT3R8NnQ6D74Xi9P2UAeWnwNnGDrPmWYdEyjjNdp"
+				"bzz-raw://95fddbeff47a8d793fa95d620066dcd6c9c435ee2c59d99d8d22b2863311949e",
+				"dweb:/ipfs/QmWJFtqY9AwFUVznH52MorXPT9rd7ZqpuCrz8jpuLkSXWm"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {

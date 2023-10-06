@@ -14,6 +14,7 @@ contract('OnReviewableExample', (accounts) => {
   const reviewerAddress1 = accounts[1]    
   const reviewerAddress2 = accounts[2]
   const reviewerAddress3 = accounts[3]
+  const zeroAddress = "0x0000000000000000000000000000000000000000";
   const hypercertID1 = toBN("10000218199072539564261652963204804198268928");
   const hypercertID2 = toBN("10000558481439460502725116337812235966480384");
   const rewardPerReview1 = "10000000000000000"
@@ -59,7 +60,7 @@ contract('OnReviewableExample', (accounts) => {
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       let reviewFormIndex = reviewFormsTotal - 1
-      await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+      await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
       let answersArray = ["choice1", "Yes"]
       const abi = [
@@ -68,7 +69,7 @@ contract('OnReviewableExample', (accounts) => {
         { type: 'string[]', name: 'answers' },
         { type: 'string', name: 'pdfIpfsHash' },
       ];
-      
+
       const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
       const attestation1 = {
         uid: attestationUID1,
@@ -122,7 +123,7 @@ contract('OnReviewableExample', (accounts) => {
     let hypercertsIPFSHashes = ["hash1", "hash2"]
     let ipfsHash = "hash"
     let reviewFormIndex = reviewFormsTotal - 1
-    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
     let answersArray = ["choice1", "Yes"]
     const abi = [
@@ -169,7 +170,7 @@ contract('OnReviewableExample', (accounts) => {
     let hypercertsIPFSHashes = ["hash1", "hash2"]
     let ipfsHash = "hash"
     let reviewFormIndex = reviewFormsTotal - 1
-    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
     let answersArray = ["choice1", "Yes"]
     const abi = [
@@ -210,7 +211,7 @@ contract('OnReviewableExample', (accounts) => {
     let hypercertsIPFSHashes = ["hash1", "hash2"]
     let ipfsHash = "hash"
     let reviewFormIndex = reviewFormsTotal - 1
-    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
     let answersArray = ["choice1", ""]
     const abi = [
@@ -251,7 +252,7 @@ contract('OnReviewableExample', (accounts) => {
     let hypercertsIPFSHashes = ["hash1", "hash2"]
     let ipfsHash = "hash"
     let reviewFormIndex = reviewFormsTotal - 1
-    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
     let answersArray = ["choice1", "Yes"]
     const abi = [
