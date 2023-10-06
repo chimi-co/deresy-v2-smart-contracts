@@ -474,6 +474,11 @@
 						"internalType": "bool",
 						"name": "isClosed",
 						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "paymentTokenAddress",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -1142,11 +1147,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0xa69828a5bdd4677838b494a7e88f8ff39fcc096ffce3ccaa2d5fa511e36dbf27",
+			"keccak256": "0x597d01b76804fd02ae290bfaff713cd016aa2b728010d3b816b5d72a90584a6b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://feceafea0a9d667add7d726aeb2899504836ce113cc913a9c444acab544a2af9",
-				"dweb:/ipfs/QmYVdXzcb5oT8aKa4SzmU9jaFFUHS4pZrVbQzAnidaWJtr"
+				"bzz-raw://95fddbeff47a8d793fa95d620066dcd6c9c435ee2c59d99d8d22b2863311949e",
+				"dweb:/ipfs/QmWJFtqY9AwFUVznH52MorXPT9rd7ZqpuCrz8jpuLkSXWm"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {

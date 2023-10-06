@@ -261,9 +261,9 @@ contract DeresyResolver is SchemaResolver, Ownable {
     emit ClosedReviewRequest(_name);
   }
 
-  function getRequest(string memory _name) public view returns (address[] memory reviewers, uint256[] memory hypercertIDs, string[] memory hypercertIPFSHashes, string memory formIpfsHash, uint256 rewardPerReview,Review[] memory reviews, uint256 reviewFormIndex,bool isClosed){
+  function getRequest(string memory _name) public view returns (address[] memory reviewers, uint256[] memory hypercertIDs, string[] memory hypercertIPFSHashes, string memory formIpfsHash, uint256 rewardPerReview,Review[] memory reviews, uint256 reviewFormIndex, bool isClosed, address paymentTokenAddress){
     ReviewRequest memory request = reviewRequests[_name];
-    return (request.reviewers, request.hypercertIDs, request.hypercertIPFSHashes, request.formIpfsHash, request.rewardPerReview, request.reviews, request.reviewFormIndex, request.isClosed);
+    return (request.reviewers, request.hypercertIDs, request.hypercertIPFSHashes, request.formIpfsHash, request.rewardPerReview, request.reviews, request.reviewFormIndex, request.isClosed, request.paymentTokenAddress);
   }
 
   function getReviewForm(uint256 _reviewFormIndex) public view returns(string[] memory questions, QuestionType[] memory questionTypes, string[][] memory choices, bytes32 easSchemaID){
