@@ -19,6 +19,10 @@ contract('DeresyResolver', (accounts) => {
   const rewardPerReview1 = "10000000000000000"
   const easContractAddress = "0x4200000000000000000000000000000000000021"
   const easSchemaID = "0x00000000000000000000000000000001"
+  const easReviewsID1 = "0x0000000000000000000000000000000000000000000000000000000000000002"
+  const easReviewsID2 = "0x0000000000000000000000000000000000000000000000000000000000000004"
+  const easAmendmentsID1 = "0x0000000000000000000000000000000000000000000000000000000000000003"
+  const easAmendmentsID2 = "0x0000000000000000000000000000000000000000000000000000000000000005"
   // End testing variables ----------
   let deresyResolver
   // Load contract
@@ -423,6 +427,7 @@ contract('DeresyResolver', (accounts) => {
       assert.equal(request.isClosed, true)
     })
   })
+
   describe('Paused/Not Paused Functionality', async () => {
     const notOwner = "0x0582748BEd4B4635D07991Fc14F546Fdfc9617ae"
 
@@ -462,5 +467,31 @@ contract('DeresyResolver', (accounts) => {
       let reviewFormIndex = 0
       await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     });
+  })
+
+  describe('Set EAS schemas UIDs', async () => {
+    it("should allow setting reviewsSchemaID by owner", async () => {
+      await deresyResolver.setReviewsSchemaID(easReviewsID1, { from: ownerAddress })
+      let reviewsSchemaID = await deresyResolver.reviewsSchemaID()
+      assert.equal(reviewsSchemaID, easReviewsID1)
+    })
+
+    it("should revert if setting reviewsSchemaID by NOT owner", async () => {
+      await truffleAssert.reverts(deresyResolver.setReviewsSchemaID(easReviewsID2, { from: reviewerAddress1 }))
+      let reviewsSchemaID = await deresyResolver.reviewsSchemaID()
+      assert.notEqual(reviewsSchemaID, easReviewsID2)
+    })
+
+    it("should allow setting amendmentsSchemaID by owner", async () => {
+      await deresyResolver.setAmendmentsSchemaID(easAmendmentsID1, { from: ownerAddress })
+      let amendmentsSchemaID = await deresyResolver.amendmentsSchemaID()
+      assert.equal(amendmentsSchemaID, easAmendmentsID1)
+    })
+
+    it("should revert if setting amendmentsSchemaID by NOT owner", async () => {
+      await truffleAssert.reverts(deresyResolver.setAmendmentsSchemaID(easAmendmentsID2, { from: reviewerAddress1 }))
+      let amendmentsSchemaID = await deresyResolver.amendmentsSchemaID()
+      assert.notEqual(amendmentsSchemaID, easAmendmentsID2)
+    })
   })
 })

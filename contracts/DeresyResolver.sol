@@ -21,6 +21,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     address reviewer;
     uint256 hypercertID;
     bytes32 attestationID;
+		bytes32[] amendmentsUIDs;
   }
     
   struct ReviewRequest {
@@ -39,6 +40,9 @@ contract DeresyResolver is SchemaResolver, Ownable {
   }
 
   mapping(string => ReviewRequest) private reviewRequests;
+
+	bytes32 public reviewsSchemaID;
+  bytes32 public amendmentsSchemaID;
   
   address[] whitelistedTokens;
 
@@ -56,6 +60,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
   event ClosedReviewRequest(string _requestName);
   event SubmittedReview(string _requestName);
   event OnReviewCallback(Attestation _attestation, string _requestName);
+	event SubmittedAmendment(bytes32 _uid);
 
   constructor(IEAS eas) SchemaResolver(eas) {
     whitelistedTokens.push(address(0));
@@ -105,7 +110,17 @@ contract DeresyResolver is SchemaResolver, Ownable {
     Attestation calldata attestation,
     uint256 /*value*/
   ) internal override whenUnpaused returns (bool) {
-    (string memory requestName, uint256 hypercertID, string[] memory answers,) = abi.decode(attestation.data, (string, uint256, string[], string));
+    if (attestation.schema == reviewsSchemaID) {
+      return processReview(attestation);
+    } else if (attestation.schema == amendmentsSchemaID) {
+      return processAmendment(attestation);
+    } else {
+      return false;
+    }
+  }
+
+	function processReview(Attestation calldata attestation) internal returns (bool) {
+		(string memory requestName, uint256 hypercertID, string[] memory answers,) = abi.decode(attestation.data, (string, uint256, string[], string));
     ReviewRequest storage request = reviewRequests[requestName];
     reviewForm storage requestForm = reviewForms[request.reviewFormIndex];
     address attester = attestation.attester;
@@ -114,7 +129,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     bool isValid = !request.isClosed && validateHypercertID(request.hypercertIDs, hypercertID) && requestForm.questions.length == answers.length && isReviewer(attester, requestName) && hasSubmittedReview(attester, requestName, hypercertID) && validateAnswers(requestForm, answers);
 
     if(isValid){
-      request.reviews.push(Review(attester,hypercertID, attestationID));
+      request.reviews.push(Review(attester,hypercertID, attestationID, new bytes32[] (0)));
       if (request.rewardPerReview > 0) {
         request.fundsLeft -= request.rewardPerReview;
 
@@ -132,7 +147,35 @@ contract DeresyResolver is SchemaResolver, Ownable {
       emit SubmittedReview(requestName);
     }
     return isValid;
-  }
+	}
+
+	function processAmendment(Attestation calldata attestation) internal returns (bool) {
+    (string memory requestName, uint256 hypercertID, string memory amendment) = abi.decode(attestation.data, (string, uint256, string));
+    ReviewRequest storage request = reviewRequests[requestName];
+    if (request.reviews.length > 0) {
+			for (uint i = 0; i < request.reviews.length; i++) {
+				if (request.reviews[i].attestationID == attestation.refUID &&
+					request.reviews[i].reviewer == attestation.attester &&
+					bytes(amendment).length > 0 &&
+					request.reviews[i].hypercertID == hypercertID) {
+					bool uidExists = false;
+					for (uint j = 0; j < request.reviews[i].amendmentsUIDs.length; j++) {
+							if (request.reviews[i].amendmentsUIDs[j] == attestation.uid) {
+									uidExists = true;
+									break;
+							}
+					}
+
+					if (!uidExists) {
+							request.reviews[i].amendmentsUIDs.push(attestation.uid);
+							emit SubmittedAmendment(attestation.uid);
+							return true;
+					}
+				}
+			}
+    }
+    return false;
+	}
 
   function onRevoke(Attestation calldata /*attestation*/, uint256 /*value*/) internal pure override returns (bool) {
     return true;
@@ -344,5 +387,13 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
    function setCallbackContract(address _callbackContractAddress) external onlyOwner {
     callbackContract = IOnReviewable(_callbackContractAddress);
+  }
+
+	function setReviewsSchemaID(bytes32 _reviewsSchemaID) external onlyOwner {
+		reviewsSchemaID = _reviewsSchemaID;
+  }
+
+  function setAmendmentsSchemaID(bytes32 _amendmentsSchemaID) external onlyOwner {
+		amendmentsSchemaID = _amendmentsSchemaID;
   }
 }

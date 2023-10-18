@@ -22,7 +22,8 @@ contract('OnReviewableExample', (accounts) => {
   const easSchemaID = "0x00000000000000000000000000000001"
   const attestationUID1 ="0x0000000000000000000000000000000000000000000000000000000000000001"
   const attestationUID2 ="0x0000000000000000000000000000000000000000000000000000000000000002"
-  const schemaUID = "0x0000000000000000000000000000000000000000000000000000000000000002"
+  const reviewsSchemaUID = "0x0000000000000000000000000000000000000000000000000000000000000003"
+  const amendmentsSchemaUID = "0x0000000000000000000000000000000000000000000000000000000000000004"
   // End testing variables ----------
   let deresyAttestations
   let onReviewableExample
@@ -30,6 +31,8 @@ contract('OnReviewableExample', (accounts) => {
   before(async ()=> {            
     deresyAttestations = await DeresyAttestations.new(easContractAddress)
     await deresyAttestations.unpause()
+    await deresyAttestations.setReviewsSchemaID(reviewsSchemaUID, { from: ownerAddress })
+    await deresyAttestations.setAmendmentsSchemaID(amendmentsSchemaUID, { from: ownerAddress })
     onReviewableExample = await OnReviewableExample.new()
   })
 
@@ -73,7 +76,7 @@ contract('OnReviewableExample', (accounts) => {
       const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
       const attestation1 = {
         uid: attestationUID1,
-        schema: schemaUID,
+        schema: reviewsSchemaUID,
         attester: reviewerAddress2,
         data: encodedData,
         time: 1695111673n,
@@ -88,7 +91,7 @@ contract('OnReviewableExample', (accounts) => {
       const encodedData2 = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID2, answersArray, "pdfIpfsHash"]);
       const attestation2 = {
         uid: attestationUID2,
-        schema: schemaUID,
+        schema: reviewsSchemaUID,
         attester: reviewerAddress2,
         data: encodedData2,
         time: 1695111673n,
@@ -136,7 +139,7 @@ contract('OnReviewableExample', (accounts) => {
     const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
     const attestation1 = {
       uid: attestationUID1,
-      schema: schemaUID,
+      schema: reviewsSchemaUID,
       attester: reviewerAddress2,
       data: encodedData,
       time: 1695111673n,
@@ -183,7 +186,7 @@ contract('OnReviewableExample', (accounts) => {
     const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
     const attestation1 = {
       uid: attestationUID1,
-      schema: schemaUID,
+      schema: reviewsSchemaUID,
       attester: reviewerAddress2,
       data: encodedData,
       time: 1695111673n,
@@ -224,7 +227,7 @@ contract('OnReviewableExample', (accounts) => {
     const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
     const attestation1 = {
       uid: attestationUID1,
-      schema: schemaUID,
+      schema: reviewsSchemaUID,
       attester: reviewerAddress2,
       data: encodedData,
       time: 1695111673n,
@@ -265,7 +268,7 @@ contract('OnReviewableExample', (accounts) => {
     const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash"]);
     const attestation1 = {
       uid: attestationUID1,
-      schema: schemaUID,
+      schema: reviewsSchemaUID,
       attester: reviewerAddress2,
       data: encodedData,
       time: 1695111673n,

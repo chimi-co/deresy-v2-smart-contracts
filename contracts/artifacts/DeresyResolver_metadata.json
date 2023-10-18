@@ -170,6 +170,19 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "bytes32",
+						"name": "_uid",
+						"type": "bytes32"
+					}
+				],
+				"name": "SubmittedAmendment",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
 						"internalType": "string",
 						"name": "_requestName",
 						"type": "string"
@@ -177,6 +190,19 @@
 				],
 				"name": "SubmittedReview",
 				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "amendmentsSchemaID",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [
@@ -459,6 +485,11 @@
 								"internalType": "bytes32",
 								"name": "attestationID",
 								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32[]",
+								"name": "amendmentsUIDs",
+								"type": "bytes32[]"
 							}
 						],
 						"internalType": "struct DeresyResolver.Review[]",
@@ -816,6 +847,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "reviewsSchemaID",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"components": [
@@ -889,12 +933,38 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bytes32",
+						"name": "_amendmentsSchemaID",
+						"type": "bytes32"
+					}
+				],
+				"name": "setAmendmentsSchemaID",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "_callbackContractAddress",
 						"type": "address"
 					}
 				],
 				"name": "setCallbackContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_reviewsSchemaID",
+						"type": "bytes32"
+					}
+				],
+				"name": "setReviewsSchemaID",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1147,11 +1217,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x597d01b76804fd02ae290bfaff713cd016aa2b728010d3b816b5d72a90584a6b",
+			"keccak256": "0x137dfddd2b56ea7342e275f4aca0289e6c41ab5e591df957e121342548c35d03",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://95fddbeff47a8d793fa95d620066dcd6c9c435ee2c59d99d8d22b2863311949e",
-				"dweb:/ipfs/QmWJFtqY9AwFUVznH52MorXPT9rd7ZqpuCrz8jpuLkSXWm"
+				"bzz-raw://e76b6a2dbbdea8607ea94f9d6086c64e3568799165340b3c9845c46eaf04a526",
+				"dweb:/ipfs/QmVTqsdXdcWSRDJgWdp4UeRS7vniNMij6Ki1QjmExKTcuB"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {
