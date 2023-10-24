@@ -10,8 +10,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
   IOnReviewable public callbackContract;
   enum QuestionType {Text, Checkbox, SingleChoice}
 
-  struct reviewForm {
-    bytes32 easSchemaID ;
+  struct ReviewForm {
     string[] questions;
     QuestionType[] questionTypes;
     string[][] choices;
@@ -53,7 +52,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
   bool public paused = true;
 
-  reviewForm[] reviewForms;
+  ReviewForm[] reviewForms;
 
   event CreatedReviewForm(uint256 _formId);
   event CreatedReviewRequest(string _requestName);
@@ -122,7 +121,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
 	function processReview(Attestation calldata attestation) internal returns (bool) {
 		(string memory requestName, uint256 hypercertID, string[] memory answers,) = abi.decode(attestation.data, (string, uint256, string[], string));
     ReviewRequest storage request = reviewRequests[requestName];
-    reviewForm storage requestForm = reviewForms[request.reviewFormIndex];
+    ReviewForm storage requestForm = reviewForms[request.reviewFormIndex];
     address attester = attestation.attester;
     bytes32 attestationID = attestation.uid;
 
@@ -181,13 +180,12 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return true;
   }
 
-  function createReviewForm(bytes32 easSchemaID, string[] memory questions, string[][] memory choices, QuestionType[] memory questionTypes) external whenUnpaused returns (uint256){
-    require(easSchemaID != bytes32(0), "Deresy: EAS Schema ID can't be null");
+  function createReviewForm(string[] memory questions, string[][] memory choices, QuestionType[] memory questionTypes) external whenUnpaused returns (uint256){
     require(questions.length > 0, "Deresy: Questions can't be null");
     require(questionTypes.length > 0, "Deresy: Question Types can't be null");
     require(questionTypes.length == questions.length, "Deresy: Questions and types must have the same length");
     require(questions.length == choices.length, "Deresy: Questions and choices must have the same length");
-    reviewForms.push(reviewForm(easSchemaID, questions, questionTypes, choices));
+    reviewForms.push(ReviewForm(questions, questionTypes, choices));
     reviewFormsTotal += 1;
     emit CreatedReviewForm(reviewForms.length - 1);
     return reviewForms.length - 1;
@@ -304,13 +302,12 @@ contract DeresyResolver is SchemaResolver, Ownable {
     emit ClosedReviewRequest(_name);
   }
 
-  function getRequest(string memory _name) public view returns (address[] memory reviewers, uint256[] memory hypercertIDs, string[] memory hypercertIPFSHashes, string memory formIpfsHash, uint256 rewardPerReview,Review[] memory reviews, uint256 reviewFormIndex, bool isClosed, address paymentTokenAddress){
-    ReviewRequest memory request = reviewRequests[_name];
-    return (request.reviewers, request.hypercertIDs, request.hypercertIPFSHashes, request.formIpfsHash, request.rewardPerReview, request.reviews, request.reviewFormIndex, request.isClosed, request.paymentTokenAddress);
+  function getRequest(string memory _name) public view returns (ReviewRequest memory reviewRequest){
+    return reviewRequests[_name];
   }
 
-  function getReviewForm(uint256 _reviewFormIndex) public view returns(string[] memory questions, QuestionType[] memory questionTypes, string[][] memory choices, bytes32 easSchemaID){
-    return (reviewForms[_reviewFormIndex].questions, reviewForms[_reviewFormIndex].questionTypes, reviewForms[_reviewFormIndex].choices, reviewForms[_reviewFormIndex].easSchemaID);
+  function getReviewForm(uint256 _reviewFormIndex) public view returns(ReviewForm memory reviewForm){
+    return reviewForms[_reviewFormIndex];
   }
 
   function getReviewRequestsNames() public view returns(string[] memory){
@@ -319,12 +316,6 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
   function getWhitelistedTokens() public view returns(address[] memory) {
     return whitelistedTokens;
-  }
-
-  function getRequestReviewForm(string memory _name) public view returns(string[] memory, QuestionType[] memory, string[][] memory choices, bytes32){
-    ReviewRequest storage request = reviewRequests[_name];
-    reviewForm storage requestForm = reviewForms[request.reviewFormIndex];
-     return (requestForm.questions, requestForm.questionTypes, requestForm.choices, requestForm.easSchemaID);
   }
 
   function isReviewer(address reviewerAddress, string memory _name) internal view returns (bool) {
@@ -347,7 +338,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return notReviewed;
   }
 
-  function validateAnswers(reviewForm storage form, string[] memory answers) internal view returns (bool) {
+  function validateAnswers(ReviewForm storage form, string[] memory answers) internal view returns (bool) {
     for (uint256 i = 0; i < answers.length; i++) {
       if (form.questionTypes[i] == QuestionType.SingleChoice) {
         bool isValidAnswer = false;

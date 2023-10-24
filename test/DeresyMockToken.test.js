@@ -19,9 +19,7 @@ contract('DeresyMockToken', (accounts) => {
   const hypercertID2 = toBN("10000558481439460502725116337812235966480384");
   const rewardPerReview1 = "10000000000000000"
   const easContractAddress = "0x4200000000000000000000000000000000000021"
-  const easSchemaID = "0x00000000000000000000000000000001"
-  const attestationUID ="0x0000000000000000000000000000000000000000000000000000000000000001"
-  const schemaUID = "0x0000000000000000000000000000000000000000000000000000000000000002"
+  const reviewsSchemaUID = "0x0000000000000000000000000000000000000000000000000000000000000003"
   // End testing variables ----------
   let deresyResolver
   let deresyMockTokens
@@ -42,8 +40,8 @@ contract('DeresyMockToken', (accounts) => {
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = [2, 1]
       let choicesArray = [["choice1", "choice2"], []]
-      await deresyResolver.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
-      let reviewFormsTotal = await deresyResolver.reviewFormsTotal().then(b => { return b.toNumber() })
+      await deresyResolver.createReviewForm(questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+      let reviewFormsTotal = await deresyResolver.reviewFormsTotal()
 
       let requestName = "RRC1"
       let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
@@ -60,13 +58,12 @@ contract('DeresyMockToken', (accounts) => {
       assert.equal(balanceAfter.toString(), web3.utils.toWei("99.94", "ether"));
 
       let request = await deresyResolver.getRequest(requestName)
-
       assert.deepEqual(request.reviewers, reviewersArray)
       assert.deepEqual(request.hypercertIDs.map(h => h.toString()), hypercertsArray.map(h => h.toString()))
       assert.deepEqual(request.hypercertIPFSHashes, hypercertsIPFSHashes)
       assert.equal(request.formIpfsHash, ipfsHash)
       assert.equal(request.rewardPerReview, rewardPerReview1)
-      assert.equal(request.reviewFormIndex.toNumber(), reviewFormIndex)
+      assert.equal(request.reviewFormIndex, reviewFormIndex)
       assert.equal(request.reviews, 0)
       assert.equal(request.isClosed, false)
     })
@@ -75,7 +72,7 @@ contract('DeresyMockToken', (accounts) => {
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = [2, 1]
       let choicesArray = [["choice1", "choice2"], []]
-      await deresyResolver.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+      await deresyResolver.createReviewForm(questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
       let reviewFormsTotal = await deresyResolver.reviewFormsTotal().then(b => { return b.toNumber() })
 
       let requestName = "RRC1"

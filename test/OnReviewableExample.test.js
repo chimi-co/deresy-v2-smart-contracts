@@ -19,7 +19,6 @@ contract('OnReviewableExample', (accounts) => {
   const hypercertID2 = toBN("10000558481439460502725116337812235966480384");
   const rewardPerReview1 = "10000000000000000"
   const easContractAddress = "0x4200000000000000000000000000000000000021"
-  const easSchemaID = "0x00000000000000000000000000000001"
   const attestationUID1 ="0x0000000000000000000000000000000000000000000000000000000000000001"
   const attestationUID2 ="0x0000000000000000000000000000000000000000000000000000000000000002"
   const reviewsSchemaUID = "0x0000000000000000000000000000000000000000000000000000000000000003"
@@ -54,7 +53,7 @@ contract('OnReviewableExample', (accounts) => {
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = [2, 1]
       let choicesArray = [["choice1", "choice2"], []]
-      await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+      await deresyAttestations.createReviewForm(questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
       let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
 
       let requestName = "ORE1"
@@ -117,7 +116,7 @@ contract('OnReviewableExample', (accounts) => {
     let questionsArray = ["Q1", "Q2"]
     let questionTypesArray = [2, 1]
     let choicesArray = [["choice1", "choice2"], []]
-    await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+    await deresyAttestations.createReviewForm(questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
     let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
 
     let requestName = "ORE2"
@@ -164,7 +163,7 @@ contract('OnReviewableExample', (accounts) => {
     let questionsArray = ["Q1", "Q2"]
     let questionTypesArray = [2, 1]
     let choicesArray = [["choice1", "choice2"], []]
-    await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+    await deresyAttestations.createReviewForm(questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
     let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
 
     let requestName = "ORE3"
@@ -205,7 +204,7 @@ contract('OnReviewableExample', (accounts) => {
     let questionsArray = ["Q1", "Q2"]
     let questionTypesArray = [2, 1]
     let choicesArray = [["choice1", "choice2"], []]
-    await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+    await deresyAttestations.createReviewForm(questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
     let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
 
     let requestName = "ORE4"
@@ -246,7 +245,7 @@ contract('OnReviewableExample', (accounts) => {
     let questionsArray = ["Q1", "Q2"]
     let questionTypesArray = [2, 1]
     let choicesArray = [["choice1", "choice2"], []]
-    await deresyAttestations.createReviewForm(easSchemaID, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+    await deresyAttestations.createReviewForm(questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
     let reviewFormsTotal = await deresyAttestations.reviewFormsTotal().then(b => { return b.toNumber() })
 
     let requestName = "ORE5"
