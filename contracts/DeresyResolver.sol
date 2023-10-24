@@ -306,6 +306,11 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return reviewRequests[_name];
   }
 
+  function getRequestReviewForm(string memory _name) public view returns(ReviewForm memory requestReviewForm){
+    ReviewRequest storage request = reviewRequests[_name];
+    return reviewForms[request.reviewFormIndex];
+  }
+
   function getReviewForm(uint256 _reviewFormIndex) public view returns(ReviewForm memory reviewForm){
     return reviewForms[_reviewFormIndex];
   }

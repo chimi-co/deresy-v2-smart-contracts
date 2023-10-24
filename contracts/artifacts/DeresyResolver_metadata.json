@@ -403,11 +403,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "bytes32",
-						"name": "easSchemaID",
-						"type": "bytes32"
-					},
-					{
 						"internalType": "string[]",
 						"name": "questions",
 						"type": "string[]"
@@ -445,71 +440,93 @@
 				"name": "getRequest",
 				"outputs": [
 					{
-						"internalType": "address[]",
-						"name": "reviewers",
-						"type": "address[]"
-					},
-					{
-						"internalType": "uint256[]",
-						"name": "hypercertIDs",
-						"type": "uint256[]"
-					},
-					{
-						"internalType": "string[]",
-						"name": "hypercertIPFSHashes",
-						"type": "string[]"
-					},
-					{
-						"internalType": "string",
-						"name": "formIpfsHash",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "rewardPerReview",
-						"type": "uint256"
-					},
-					{
 						"components": [
 							{
 								"internalType": "address",
-								"name": "reviewer",
+								"name": "sponsor",
+								"type": "address"
+							},
+							{
+								"internalType": "address[]",
+								"name": "reviewers",
+								"type": "address[]"
+							},
+							{
+								"internalType": "uint256[]",
+								"name": "hypercertIDs",
+								"type": "uint256[]"
+							},
+							{
+								"internalType": "string[]",
+								"name": "hypercertIPFSHashes",
+								"type": "string[]"
+							},
+							{
+								"internalType": "string",
+								"name": "formIpfsHash",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "rewardPerReview",
+								"type": "uint256"
+							},
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "reviewer",
+										"type": "address"
+									},
+									{
+										"internalType": "uint256",
+										"name": "hypercertID",
+										"type": "uint256"
+									},
+									{
+										"internalType": "bytes32",
+										"name": "attestationID",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "bytes32[]",
+										"name": "amendmentsUIDs",
+										"type": "bytes32[]"
+									}
+								],
+								"internalType": "struct DeresyResolver.Review[]",
+								"name": "reviews",
+								"type": "tuple[]"
+							},
+							{
+								"internalType": "bool",
+								"name": "isClosed",
+								"type": "bool"
+							},
+							{
+								"internalType": "address",
+								"name": "paymentTokenAddress",
 								"type": "address"
 							},
 							{
 								"internalType": "uint256",
-								"name": "hypercertID",
+								"name": "fundsLeft",
 								"type": "uint256"
 							},
 							{
-								"internalType": "bytes32",
-								"name": "attestationID",
-								"type": "bytes32"
+								"internalType": "uint256",
+								"name": "reviewFormIndex",
+								"type": "uint256"
 							},
 							{
-								"internalType": "bytes32[]",
-								"name": "amendmentsUIDs",
-								"type": "bytes32[]"
+								"internalType": "string",
+								"name": "name",
+								"type": "string"
 							}
 						],
-						"internalType": "struct DeresyResolver.Review[]",
-						"name": "reviews",
-						"type": "tuple[]"
-					},
-					{
-						"internalType": "uint256",
-						"name": "reviewFormIndex",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isClosed",
-						"type": "bool"
-					},
-					{
-						"internalType": "address",
-						"name": "paymentTokenAddress",
-						"type": "address"
+						"internalType": "struct DeresyResolver.ReviewRequest",
+						"name": "reviewRequest",
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -526,24 +543,26 @@
 				"name": "getRequestReviewForm",
 				"outputs": [
 					{
-						"internalType": "string[]",
-						"name": "",
-						"type": "string[]"
-					},
-					{
-						"internalType": "enum DeresyResolver.QuestionType[]",
-						"name": "",
-						"type": "uint8[]"
-					},
-					{
-						"internalType": "string[][]",
-						"name": "choices",
-						"type": "string[][]"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "",
-						"type": "bytes32"
+						"components": [
+							{
+								"internalType": "string[]",
+								"name": "questions",
+								"type": "string[]"
+							},
+							{
+								"internalType": "enum DeresyResolver.QuestionType[]",
+								"name": "questionTypes",
+								"type": "uint8[]"
+							},
+							{
+								"internalType": "string[][]",
+								"name": "choices",
+								"type": "string[][]"
+							}
+						],
+						"internalType": "struct DeresyResolver.ReviewForm",
+						"name": "requestReviewForm",
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -560,24 +579,26 @@
 				"name": "getReviewForm",
 				"outputs": [
 					{
-						"internalType": "string[]",
-						"name": "questions",
-						"type": "string[]"
-					},
-					{
-						"internalType": "enum DeresyResolver.QuestionType[]",
-						"name": "questionTypes",
-						"type": "uint8[]"
-					},
-					{
-						"internalType": "string[][]",
-						"name": "choices",
-						"type": "string[][]"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "easSchemaID",
-						"type": "bytes32"
+						"components": [
+							{
+								"internalType": "string[]",
+								"name": "questions",
+								"type": "string[]"
+							},
+							{
+								"internalType": "enum DeresyResolver.QuestionType[]",
+								"name": "questionTypes",
+								"type": "uint8[]"
+							},
+							{
+								"internalType": "string[][]",
+								"name": "choices",
+								"type": "string[][]"
+							}
+						],
+						"internalType": "struct DeresyResolver.ReviewForm",
+						"name": "reviewForm",
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -1217,11 +1238,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x137dfddd2b56ea7342e275f4aca0289e6c41ab5e591df957e121342548c35d03",
+			"keccak256": "0x52a40590b980ca49cc37ad4d3c11d972154f66009bc1f2fdd7de44b4f5e63edd",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e76b6a2dbbdea8607ea94f9d6086c64e3568799165340b3c9845c46eaf04a526",
-				"dweb:/ipfs/QmVTqsdXdcWSRDJgWdp4UeRS7vniNMij6Ki1QjmExKTcuB"
+				"bzz-raw://3d87913c03e15bf1e8cbc96adc3d1429bf5cd8d17d83081649be3842c7ae6238",
+				"dweb:/ipfs/QmVGpxXUNTnTqt91e6oPH7UkPx1mprFWiMXuayfhkB2oAM"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {
