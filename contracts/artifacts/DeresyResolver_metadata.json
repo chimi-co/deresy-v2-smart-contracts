@@ -1238,11 +1238,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x8086872159eeff638dcb28a4a784f8e4a00ddab77c93ebee1893693d5b73fe31",
+			"keccak256": "0xcb98263b044d3fe32e502440dc2e5445e953c25851b79a5daee5f4cec99eaf31",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4bcab80f7681ebabc03fdb1147bb71a3a11138c0415bb4c5ef44b8a310d9132c",
-				"dweb:/ipfs/QmQfHVbVBiv5YP85EGLqtLWEU3rvhCbyXiSubwLVJ29PLw"
+				"bzz-raw://99ed398f6646502c4375fe66d9f60bc7136246d555f465a5f9a3d7c4fc3f7522",
+				"dweb:/ipfs/QmNcNzRJDTo1MXVMvqpGp9Z4zCdnA7T2bc53uYMhKKwpVw"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {
