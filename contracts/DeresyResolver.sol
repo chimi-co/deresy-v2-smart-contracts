@@ -149,7 +149,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
 	}
 
 	function processAmendment(Attestation calldata attestation) internal returns (bool) {
-    (string memory requestName, uint256 hypercertID, string memory amendment,) = abi.decode(attestation.data, (string, uint256, string, string[]));
+    (string memory requestName, uint256 hypercertID, string memory amendment,,) = abi.decode(attestation.data, (string, uint256, string, string, string[]));
     ReviewRequest storage request = reviewRequests[requestName];
     if (request.reviews.length > 0) {
 			for (uint i = 0; i < request.reviews.length; i++) {

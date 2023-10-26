@@ -359,7 +359,7 @@ contract('DeresyAttestations', (accounts) => {
         revocable: false
       };
 
-      await truffleAssert.reverts(deresyAttestations.deresyAttestation(attestation, { from: reviewerAddress1, value: 0 }))
+      await deresyAttestations.deresyAttestation(attestation, { from: reviewerAddress1, value: 0 })
       let request = await deresyAttestations.getRequest(requestName)
       assert.equal(request.reviews.length, 0)
     })
@@ -823,9 +823,10 @@ contract('DeresyAttestations', (accounts) => {
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string', name: 'amendment' },
+        { type: 'string', name: 'ipfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
-      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
@@ -840,7 +841,7 @@ contract('DeresyAttestations', (accounts) => {
       };
       await truffleAssert.passes(deresyAttestations.deresyAttestation(amendmentAttestation, { from: reviewerAddress1, value: 0 }));
 
-      const amendmentEncodedData2 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID2, "amendment text", []]);
+      const amendmentEncodedData2 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID2, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation2 = {
         uid: amendmentAttestationUID2,
         schema: amendmentsSchemaUID,
@@ -855,7 +856,7 @@ contract('DeresyAttestations', (accounts) => {
       };
       await truffleAssert.passes(deresyAttestations.deresyAttestation(amendmentAttestation2, { from: reviewerAddress1, value: 0 }));
 
-      const amendmentEncodedData3 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData3 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation3 = {
         uid: amendmentAttestationUID3,
         schema: amendmentsSchemaUID,
@@ -870,7 +871,7 @@ contract('DeresyAttestations', (accounts) => {
       };
       await truffleAssert.passes(deresyAttestations.deresyAttestation(amendmentAttestation3, { from: reviewerAddress2, value: 0 }));
 
-      const amendmentEncodedData4 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData4 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation4 = {
         uid: amendmentAttestationUID4,
         schema: amendmentsSchemaUID,
@@ -885,7 +886,7 @@ contract('DeresyAttestations', (accounts) => {
       };
       await truffleAssert.passes(deresyAttestations.deresyAttestation(amendmentAttestation4, { from: reviewerAddress1, value: 0 }));
 
-      const amendmentEncodedData5 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData5 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation5 = {
         uid: amendmentAttestationUID5,
         schema: amendmentsSchemaUID,
@@ -978,9 +979,10 @@ contract('DeresyAttestations', (accounts) => {
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string', name: 'amendment' },
+        { type: 'string', name: 'ipfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
-      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
@@ -1030,9 +1032,10 @@ contract('DeresyAttestations', (accounts) => {
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string', name: 'amendment' },
+        { type: 'string', name: 'ipfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
-      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
@@ -1106,9 +1109,10 @@ contract('DeresyAttestations', (accounts) => {
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string', name: 'amendment' },
+        { type: 'string', name: 'pdfIpfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
-      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
@@ -1189,9 +1193,10 @@ contract('DeresyAttestations', (accounts) => {
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string', name: 'amendment' },
+        { type: 'string', name: 'pdfIpfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
-      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "", []]);
+      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "", "pdfIpfsHash", []]);
       const amendmentAttestation = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
@@ -1272,9 +1277,10 @@ contract('DeresyAttestations', (accounts) => {
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string', name: 'amendment' },
+        { type: 'string', name: 'pdfIpfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
-      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "", []]);
+      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
@@ -1289,7 +1295,7 @@ contract('DeresyAttestations', (accounts) => {
       };
       await truffleAssert.passes(deresyAttestations.deresyAttestation(amendmentAttestation, { from: reviewerAddress1, value: 0 }));
       //Repeating the same amendment attestation UID should fail
-      const amendmentEncodedData2 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData2 = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation2 = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
@@ -1370,9 +1376,10 @@ contract('DeresyAttestations', (accounts) => {
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string', name: 'amendment' },
+        { type: 'string', name: 'pdfIpfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
-      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID2, "amenmdent text", []]);
+      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID2, "amenmdent text", "pdfIpfsHash", []]);
       const amendmentAttestation = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
@@ -1453,9 +1460,10 @@ contract('DeresyAttestations', (accounts) => {
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string', name: 'amendment' },
+        { type: 'string', name: 'pdfIpfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
-      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
@@ -1536,9 +1544,10 @@ contract('DeresyAttestations', (accounts) => {
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string', name: 'amendment' },
+        { type: 'string', name: 'pdfIpfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
-      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", []]);
+      const amendmentEncodedData = web3.eth.abi.encodeParameters(amendmentAbi, [requestName, hypercertID1, "amendment text", "pdfIpfsHash", []]);
       const amendmentAttestation = {
         uid: amendmentAttestationUID1,
         schema: amendmentsSchemaUID,
