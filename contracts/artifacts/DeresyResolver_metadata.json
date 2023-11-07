@@ -54,9 +54,9 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "uint256",
-						"name": "_formId",
-						"type": "uint256"
+						"internalType": "string",
+						"name": "_formName",
+						"type": "string"
 					}
 				],
 				"name": "CreatedReviewForm",
@@ -342,9 +342,9 @@
 						"type": "string"
 					},
 					{
-						"internalType": "uint256",
-						"name": "reviewFormIndex",
-						"type": "uint256"
+						"internalType": "string",
+						"name": "reviewFormName",
+						"type": "string"
 					}
 				],
 				"name": "createNonPayableRequest",
@@ -390,9 +390,9 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "string",
 						"name": "reviewFormIndex",
-						"type": "uint256"
+						"type": "string"
 					}
 				],
 				"name": "createRequest",
@@ -402,6 +402,11 @@
 			},
 			{
 				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
 					{
 						"internalType": "string[]",
 						"name": "questions",
@@ -419,13 +424,7 @@
 					}
 				],
 				"name": "createReviewForm",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -514,9 +513,9 @@
 								"type": "uint256"
 							},
 							{
-								"internalType": "uint256",
-								"name": "reviewFormIndex",
-								"type": "uint256"
+								"internalType": "string",
+								"name": "reviewFormName",
+								"type": "string"
 							},
 							{
 								"internalType": "string",
@@ -571,9 +570,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "_reviewFormIndex",
-						"type": "uint256"
+						"internalType": "string",
+						"name": "_reviewFormName",
+						"type": "string"
 					}
 				],
 				"name": "getReviewForm",
@@ -852,19 +851,6 @@
 				"name": "renounceOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "reviewFormsTotal",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -1238,11 +1224,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0xcb98263b044d3fe32e502440dc2e5445e953c25851b79a5daee5f4cec99eaf31",
+			"keccak256": "0x6fdead4877c83ef6a3a1df14e27d44d4081328352127e85e81e285edfd466bf3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://99ed398f6646502c4375fe66d9f60bc7136246d555f465a5f9a3d7c4fc3f7522",
-				"dweb:/ipfs/QmNcNzRJDTo1MXVMvqpGp9Z4zCdnA7T2bc53uYMhKKwpVw"
+				"bzz-raw://76fb8e288462f917d78b48b4d82035b24e5334cc6a4ab94200b83aca52d3becb",
+				"dweb:/ipfs/QmVR3ZK4e5S3TEs6nSJUMxD55m4ejNPe1FtyGayQKg6oht"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {
