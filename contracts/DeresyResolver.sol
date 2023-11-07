@@ -34,7 +34,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     bool isClosed;
     address paymentTokenAddress;
     uint256 fundsLeft;
-    uint256 reviewFormIndex;
+    string reviewFormName;
     string name;
   }
 
@@ -46,15 +46,14 @@ contract DeresyResolver is SchemaResolver, Ownable {
   address[] whitelistedTokens;
 
   string[] reviewRequestNames;
-  uint256 public reviewFormsTotal;
   
   string public contractVersion = "0.2";
 
   bool public paused = true;
 
-  ReviewForm[] reviewForms;
+  mapping(string => ReviewForm) private reviewForms;
 
-  event CreatedReviewForm(uint256 _formId);
+  event CreatedReviewForm(string _formName);
   event CreatedReviewRequest(string _requestName);
   event ClosedReviewRequest(string _requestName);
   event SubmittedReview(string _requestName);
@@ -121,7 +120,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
 	function processReview(Attestation calldata attestation) internal returns (bool) {
 		(string memory requestName, uint256 hypercertID, string[] memory answers,,) = abi.decode(attestation.data, (string, uint256, string[], string, string[]));
     ReviewRequest storage request = reviewRequests[requestName];
-    ReviewForm storage requestForm = reviewForms[request.reviewFormIndex];
+    ReviewForm storage requestForm = reviewForms[request.reviewFormName];
     address attester = attestation.attester;
     bytes32 attestationID = attestation.uid;
 
@@ -180,15 +179,15 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return true;
   }
 
-  function createReviewForm(string[] memory questions, string[][] memory choices, QuestionType[] memory questionTypes) external whenUnpaused returns (uint256){
+  function createReviewForm(string memory _name, string[] memory questions, string[][] memory choices, QuestionType[] memory questionTypes) external whenUnpaused {
+    require(bytes(_name).length > 0, "Deresy: Name cannot be null or empty");
+    require(reviewForms[_name].questions.length == 0, "Deresy: ReviewFormName already exists");
     require(questions.length > 0, "Deresy: Questions can't be null");
     require(questionTypes.length > 0, "Deresy: Question Types can't be null");
     require(questionTypes.length == questions.length, "Deresy: Questions and types must have the same length");
     require(questions.length == choices.length, "Deresy: Questions and choices must have the same length");
-    reviewForms.push(ReviewForm(questions, questionTypes, choices));
-    reviewFormsTotal += 1;
-    emit CreatedReviewForm(reviewForms.length - 1);
-    return reviewForms.length - 1;
+    reviewForms[_name] = ReviewForm(questions, questionTypes, choices);
+    emit CreatedReviewForm(_name);
   }
 
   function createReviewRequestCommon(
@@ -198,15 +197,16 @@ contract DeresyResolver is SchemaResolver, Ownable {
       string[] memory hypercertIPFSHashes,
       string memory formIpfsHash,
       uint256 rewardPerReview,
-      uint256 reviewFormIndex,
+      string memory reviewFormName,
       address paymentTokenAddress,
       bool isPayable
   ) internal {
+    require(bytes(_name).length > 0, "Deresy: RequestName cannot be null or empty");
     require(reviewers.length > 0, "Deresy: Reviewers cannot be null");
     require(hypercertIDs.length > 0, "Deresy: Hypercert IDs cannot be null");
     require(hypercertIPFSHashes.length > 0, "Deresy: Hypercerts IPFS hashes cannot be null");
     require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
-    require(reviewFormIndex <= reviewForms.length - 1, "Deresy: ReviewFormIndex invalid");
+    require(reviewForms[reviewFormName].questions.length > 0, "Deresy: ReviewFormName does not exist");
     require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
     require(isTokenWhitelisted(paymentTokenAddress),"Deresy: Token is not whitelisted");
 
@@ -243,7 +243,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     reviewRequests[_name].isClosed = false;
     reviewRequests[_name].paymentTokenAddress = paymentTokenAddress;
     reviewRequests[_name].fundsLeft = isPayable ? tokenFundsAmount : 0;
-    reviewRequests[_name].reviewFormIndex = reviewFormIndex;
+    reviewRequests[_name].reviewFormName = reviewFormName;
     reviewRequestNames.push(_name);
 
     emit CreatedReviewRequest(_name);
@@ -257,7 +257,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     string memory formIpfsHash,
     uint256 rewardPerReview,
     address paymentTokenAddress,
-    uint256 reviewFormIndex
+    string memory reviewFormIndex
   ) external payable whenUnpaused {
       createReviewRequestCommon(
         _name,
@@ -278,7 +278,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     uint256[] memory hypercertIDs, 
     string[] memory hypercertIPFSHashes, 
     string memory formIpfsHash,
-    uint256 reviewFormIndex
+    string memory reviewFormName
   ) external whenUnpaused {
       createReviewRequestCommon(
         _name, 
@@ -287,7 +287,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
         hypercertIPFSHashes,
         formIpfsHash,
         0,
-        reviewFormIndex,
+        reviewFormName,
         address(0),
         false
       );
@@ -308,11 +308,11 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
   function getRequestReviewForm(string memory _name) public view returns(ReviewForm memory requestReviewForm){
     ReviewRequest storage request = reviewRequests[_name];
-    return reviewForms[request.reviewFormIndex];
+    return reviewForms[request.reviewFormName];
   }
 
-  function getReviewForm(uint256 _reviewFormIndex) public view returns(ReviewForm memory reviewForm){
-    return reviewForms[_reviewFormIndex];
+  function getReviewForm(string memory _reviewFormName) public view returns(ReviewForm memory reviewForm){
+    return reviewForms[_reviewFormName];
   }
 
   function getReviewRequestsNames() public view returns(string[] memory){

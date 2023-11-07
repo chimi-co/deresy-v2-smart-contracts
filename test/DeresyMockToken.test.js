@@ -40,19 +40,18 @@ contract('DeresyMockToken', (accounts) => {
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = [2, 1]
       let choicesArray = [["choice1", "choice2"], []]
-      await deresyResolver.createReviewForm(questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
-      let reviewFormsTotal = await deresyResolver.reviewFormsTotal()
+      const reviewFormName = "DMTRF1"
+      await deresyResolver.createReviewForm(reviewFormName, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
 
-      let requestName = "RRC1"
+      const requestName = "RRC1"
       let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
       let hypercertsArray = [hypercertID1, hypercertID2]
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
-      let reviewFormIndex = reviewFormsTotal - 1
 
       await deresyMockTokens.approve(deresyResolver.address, web3.utils.toWei("1", "ether"));
 
-      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, deresyMockTokens.address, reviewFormIndex, { from: ownerAddress, value: 0 }))
+      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, deresyMockTokens.address, reviewFormName, { from: ownerAddress, value: 0 }))
 
       const balanceAfter = await deresyMockTokens.balanceOf(ownerAddress);
       assert.equal(balanceAfter.toString(), web3.utils.toWei("99.94", "ether"));
@@ -63,7 +62,7 @@ contract('DeresyMockToken', (accounts) => {
       assert.deepEqual(request.hypercertIPFSHashes, hypercertsIPFSHashes)
       assert.equal(request.formIpfsHash, ipfsHash)
       assert.equal(request.rewardPerReview, rewardPerReview1)
-      assert.equal(request.reviewFormIndex, reviewFormIndex)
+      assert.equal(request.reviewFormName, reviewFormName)
       assert.equal(request.reviews, 0)
       assert.equal(request.isClosed, false)
     })
@@ -72,19 +71,18 @@ contract('DeresyMockToken', (accounts) => {
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = [2, 1]
       let choicesArray = [["choice1", "choice2"], []]
-      await deresyResolver.createReviewForm(questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
-      let reviewFormsTotal = await deresyResolver.reviewFormsTotal().then(b => { return b.toNumber() })
+      const reviewFormName = "DMTRF2"
+      await deresyResolver.createReviewForm(reviewFormName, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
 
-      let requestName = "RRC1"
+      const requestName = "RRC1"
       let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
       let hypercertsArray = [hypercertID1, hypercertID2]
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
-      let reviewFormIndex = reviewFormsTotal - 1
 
       // In this line, ERC-20 token approval should be done, for test purposes we don't use it.
 
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, deresyMockTokens.address, reviewFormIndex, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, deresyMockTokens.address, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     })
   })
 
