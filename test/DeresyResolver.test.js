@@ -57,6 +57,30 @@ contract('DeresyResolver', (accounts) => {
       });
     })
 
+    it("should return all the names of the created forms", async () => {
+      const initialReviewFormsNames = await deresyResolver.getReviewFormsNames()
+      let questionsArray = ["Q1", "Q2"]
+      let questionTypesArray = [2, 1]
+      let choicesArray = [["choice1", "choice2"], []]
+      let reviewFormName = "RF2a"
+      await truffleAssert.passes(deresyResolver.createReviewForm(reviewFormName, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 }))
+
+      questionsArray = ["Q1", "Q2"]
+      questionTypesArray = [2, 1]
+      choicesArray = [["choice1", "choice2"], []]
+      reviewFormName = "RF2b"
+      await truffleAssert.passes(deresyResolver.createReviewForm(reviewFormName, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 }))
+
+      questionsArray = ["Q1", "Q2"]
+      questionTypesArray = [2, 1]
+      choicesArray = [["choice1", "choice2"], []]
+      reviewFormName = "RF2c"
+      await truffleAssert.passes(deresyResolver.createReviewForm(reviewFormName, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 }))
+      const expectedReviewFormsNames = initialReviewFormsNames.concat(["RF2a", "RF2b", "RF2c"])
+      const allReviewFormsNames = await deresyResolver.getReviewFormsNames()
+      assert.deepEqual(allReviewFormsNames, expectedReviewFormsNames)
+    })
+
     it("should revert if questions array is empty", async () => {
       let questionsArray = []
       let questionTypesArray = [2, 1]

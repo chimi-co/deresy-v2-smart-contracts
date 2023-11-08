@@ -52,6 +52,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
   bool public paused = true;
 
   mapping(string => ReviewForm) private reviewForms;
+  string[] reviewFormsNames;
 
   event CreatedReviewForm(string _formName);
   event CreatedReviewRequest(string _requestName);
@@ -187,6 +188,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     require(questionTypes.length == questions.length, "Deresy: Questions and types must have the same length");
     require(questions.length == choices.length, "Deresy: Questions and choices must have the same length");
     reviewForms[_name] = ReviewForm(questions, questionTypes, choices);
+    reviewFormsNames.push(_name);
     emit CreatedReviewForm(_name);
   }
 
@@ -257,7 +259,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     string memory formIpfsHash,
     uint256 rewardPerReview,
     address paymentTokenAddress,
-    string memory reviewFormIndex
+    string memory reviewFormName
   ) external payable whenUnpaused {
       createReviewRequestCommon(
         _name,
@@ -266,7 +268,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
         hypercertIPFSHashes,
         formIpfsHash,
         rewardPerReview,
-        reviewFormIndex,
+        reviewFormName,
         paymentTokenAddress,
         true
       );
@@ -321,6 +323,10 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
   function getWhitelistedTokens() public view returns(address[] memory) {
     return whitelistedTokens;
+  }
+
+  function getReviewFormsNames() public view returns(string[] memory) {
+    return reviewFormsNames;
   }
 
   function isReviewer(address reviewerAddress, string memory _name) internal view returns (bool) {

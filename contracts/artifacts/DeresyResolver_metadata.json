@@ -391,7 +391,7 @@
 					},
 					{
 						"internalType": "string",
-						"name": "reviewFormIndex",
+						"name": "reviewFormName",
 						"type": "string"
 					}
 				],
@@ -598,6 +598,19 @@
 						"internalType": "struct DeresyResolver.ReviewForm",
 						"name": "reviewForm",
 						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getReviewFormsNames",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
 					}
 				],
 				"stateMutability": "view",
@@ -1224,11 +1237,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x6fdead4877c83ef6a3a1df14e27d44d4081328352127e85e81e285edfd466bf3",
+			"keccak256": "0x91e4db294c428fe6a872a5b68f360f0796c841ce20409a8254f30d56ec3b3488",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://76fb8e288462f917d78b48b4d82035b24e5334cc6a4ab94200b83aca52d3becb",
-				"dweb:/ipfs/QmVR3ZK4e5S3TEs6nSJUMxD55m4ejNPe1FtyGayQKg6oht"
+				"bzz-raw://1a75b6d594b1a9cfe992ed82c9703d0e0f8350451c13f03f021f2e435b70072a",
+				"dweb:/ipfs/QmbbLJHKEuEXHqiZ8uXcbMjmoPTZjLAv4zEGM9ZuUcYMcT"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {
