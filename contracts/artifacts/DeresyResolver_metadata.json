@@ -644,6 +644,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "hypercertContract",
+				"outputs": [
+					{
+						"internalType": "contract IHypercertable",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "isPayable",
 				"outputs": [
 					{
@@ -979,12 +992,38 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "_hypercertContractAddress",
+						"type": "address"
+					}
+				],
+				"name": "setHypercertContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "_reviewsSchemaID",
 						"type": "bytes32"
 					}
 				],
 				"name": "setReviewsSchemaID",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "_validateHypercertIDs",
+						"type": "bool"
+					}
+				],
+				"name": "setValidateHypercertIDs",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -1020,6 +1059,19 @@
 				"name": "unwhitelistToken",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "validateHypercertIDs",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -1237,19 +1289,27 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x91e4db294c428fe6a872a5b68f360f0796c841ce20409a8254f30d56ec3b3488",
+			"keccak256": "0x3330f2091fca6d722c88877ec5aa9ba8281474d6ac5b662d252c21bfa96d7a95",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1a75b6d594b1a9cfe992ed82c9703d0e0f8350451c13f03f021f2e435b70072a",
-				"dweb:/ipfs/QmbbLJHKEuEXHqiZ8uXcbMjmoPTZjLAv4zEGM9ZuUcYMcT"
+				"bzz-raw://3fb2eb37184e659b2e7bc2f52787420684d08092cb01a8c07f7cb888bb768e75",
+				"dweb:/ipfs/QmfEyPkLNSfeDznhdz6fPPL3RyG8gdyG7rTrhHRmBAiw6M"
+			]
+		},
+		"contracts/interfaces/IHypercertable.sol": {
+			"keccak256": "0x37b59a74f7dc412d7730e338405112dc3d97016f8de968472a6703351c6a5a12",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9e724fda253fcd1d7d0fa58160b4097520c0298fd505af5d3ac248e809ddde83",
+				"dweb:/ipfs/QmQR1XqDcSH3ZJauw8PmnqASra1QKZa7VVMbRRjng1GCS9"
 			]
 		},
 		"contracts/interfaces/IOnReviewable.sol": {
-			"keccak256": "0x37fa17b02a8dce7c81f8c449e57735465ae26e855eafc988d0dcaed60569aec4",
+			"keccak256": "0x75085f6195410d68cee8107603702b28072729a338a130726ef6493c46b7af0b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7a16d48b718af075cc4a05b57bf9f33505edf880535d1090d8c14639bb16d384",
-				"dweb:/ipfs/QmUTz456rAFFCYzYsqftzLwVXBwzX3oiHCgTk99s8hrNQV"
+				"bzz-raw://76a8abd9703ca4a1cd2ae702863172761eed91ced6590e56be7b6322103088a8",
+				"dweb:/ipfs/QmVr96CBhaRWgLkuWe4awkK599GK1bR9upVgUzSnfEZGEJ"
 			]
 		}
 	},

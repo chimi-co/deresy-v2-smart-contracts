@@ -30,6 +30,7 @@ contract('OnReviewableExample', (accounts) => {
   before(async ()=> {            
     deresyAttestations = await DeresyAttestations.new(easContractAddress)
     await deresyAttestations.unpause()
+    await deresyAttestations.setValidateHypercertIDs(false)
     await deresyAttestations.setReviewsSchemaID(reviewsSchemaUID, { from: ownerAddress })
     await deresyAttestations.setAmendmentsSchemaID(amendmentsSchemaUID, { from: ownerAddress })
     onReviewableExample = await OnReviewableExample.new()

@@ -33,6 +33,7 @@ contract('DeresyMockToken', (accounts) => {
 
     await deresyMockTokens.mint(ownerAddress, web3.utils.toWei("100", "ether"));
     await deresyResolver.whitelistToken(deresyMockTokens.address, { from: ownerAddress });
+    await deresyResolver.setValidateHypercertIDs(false)
   })
 
   describe('Create Review Request', async () => {

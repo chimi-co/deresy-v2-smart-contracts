@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 /**
- * @dev Interface of an ERC721ABurnable compliant contract.
+ * @dev Interface of a reviewable contract.
  */
 import { Attestation } from "@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol";
 

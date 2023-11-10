@@ -28,6 +28,7 @@ contract('DeresyResolver', (accounts) => {
   before(async ()=> {            
     deresyResolver = await DeresyResolver.new(easContractAddress)
     await deresyResolver.unpause();
+    await deresyResolver.setValidateHypercertIDs(false)
   })
 
   // Create Review Form ----------

@@ -5,9 +5,11 @@ import { IEAS, Attestation } from "@ethereum-attestation-service/eas-contracts/c
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IOnReviewable.sol";
+import "./interfaces/IHypercertable.sol";
 
 contract DeresyResolver is SchemaResolver, Ownable {
   IOnReviewable public callbackContract;
+  IHypercertable public hypercertContract;
   enum QuestionType {Text, Checkbox, SingleChoice}
 
   struct ReviewForm {
@@ -50,6 +52,8 @@ contract DeresyResolver is SchemaResolver, Ownable {
   string public contractVersion = "0.2";
 
   bool public paused = true;
+
+  bool public validateHypercertIDs = true;
 
   mapping(string => ReviewForm) private reviewForms;
   string[] reviewFormsNames;
@@ -211,6 +215,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     require(reviewForms[reviewFormName].questions.length > 0, "Deresy: ReviewFormName does not exist");
     require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
     require(isTokenWhitelisted(paymentTokenAddress),"Deresy: Token is not whitelisted");
+    require(validateRequestHypercerts(hypercertIDs), "Deresy: One or more hypercerts are not valid");
 
     uint256 tokenFundsAmount;
 
@@ -387,8 +392,28 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return false;
   }
 
-   function setCallbackContract(address _callbackContractAddress) external onlyOwner {
+  function validateRequestHypercerts(uint256[] memory hypercertIDs) internal returns (bool) {
+    if (validateHypercertIDs) {
+        for (uint256 i = 0; i < hypercertIDs.length; i++) {
+            string memory uri = hypercertContract.uri(hypercertIDs[i]);
+            if (bytes(uri).length != 0) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+  function setCallbackContract(address _callbackContractAddress) external onlyOwner {
     callbackContract = IOnReviewable(_callbackContractAddress);
+  }
+
+  function setHypercertContract(address _hypercertContractAddress) external onlyOwner {
+    hypercertContract = IHypercertable(_hypercertContractAddress);
+  }
+
+  function setValidateHypercertIDs(bool _validateHypercertIDs) external onlyOwner whenUnpaused {
+    validateHypercertIDs = _validateHypercertIDs;
   }
 
 	function setReviewsSchemaID(bytes32 _reviewsSchemaID) external onlyOwner {
