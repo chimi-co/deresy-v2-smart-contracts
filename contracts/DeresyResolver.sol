@@ -69,6 +69,9 @@ contract DeresyResolver is SchemaResolver, Ownable {
     whitelistedTokens.push(address(0));
   }
 
+  /// @notice Checks if a token is whitelisted
+  /// @param tokenAddress The address of the token to check
+  /// @return Returns true if the token is whitelisted, false otherwise
   function isTokenWhitelisted(address tokenAddress) public view returns (bool) {
     for (uint i = 0; i < whitelistedTokens.length; i++) {
       if (whitelistedTokens[i] == tokenAddress) {
@@ -79,11 +82,19 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return false;
   }
 
+  /// @notice Adds a token to the whitelist
+  /// @dev Only callable by the contract owner
+  /// @param tokenAddress The address of the token to be whitelisted
+  /// @custom:requires Token must not already be whitelisted
   function whitelistToken(address tokenAddress) external onlyOwner {
     require(!isTokenWhitelisted(tokenAddress), "Token already whitelisted");
     whitelistedTokens.push(tokenAddress);
   }
 
+  /// @notice Removes a token from the whitelist
+  /// @dev Only callable by the contract owner
+  /// @param tokenAddress The address of the token to be removed from the whitelist
+  /// @custom:requires Token must be in the whitelist
   function unwhitelistToken(address tokenAddress) external onlyOwner {
     require(isTokenWhitelisted(tokenAddress), "Token not in whitelist");
 
@@ -96,19 +107,30 @@ contract DeresyResolver is SchemaResolver, Ownable {
     }
   }
 
+  /// @notice Modifier that requires the contract to not be paused
+  /// @custom:requires Contract must not be paused
   modifier whenUnpaused {
     require(!paused, "Contract is paused");
     _;
   }
 
+  /// @notice Pauses the contract
+  /// @dev Only callable by the contract owner and when the contract is not paused
   function pause() external onlyOwner whenUnpaused {
     paused = true;
   }
 
+  /// @notice Unpauses the contract
+  /// @dev Only callable by the contract owner
   function unpause() external onlyOwner {
     paused = false;
   }
 
+  /// @notice Processes attestations for reviews or amendments
+  /// @dev Called internally, overrides parent function
+  /// @param attestation The attestation data
+  /// @return Returns true if the attestation is processed successfully
+  /// @custom:requires Contract should not be paused
   function onAttest(
     Attestation calldata attestation,
     uint256 /*value*/
@@ -122,6 +144,11 @@ contract DeresyResolver is SchemaResolver, Ownable {
     }
   }
 
+  /// @notice Processes a review attestation
+  /// @dev Validates and stores review data
+  /// @param attestation The review attestation data
+  /// @return Returns true if the review is valid and processed, false otherwise
+  /// @custom:visibility internal
 	function processReview(Attestation calldata attestation) internal returns (bool) {
 		(string memory requestName, uint256 hypercertID, string[] memory answers,,) = abi.decode(attestation.data, (string, uint256, string[], string, string[]));
     ReviewRequest storage request = reviewRequests[requestName];
@@ -152,6 +179,11 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return isValid;
 	}
 
+  /// @notice Processes an amendment attestation
+  /// @dev Validates and stores amendment data
+  /// @param attestation The amendment attestation data
+  /// @return Returns true if the amendment is valid and processed, false otherwise
+  /// @custom:visibility internal
 	function processAmendment(Attestation calldata attestation) internal returns (bool) {
     (string memory requestName, uint256 hypercertID, string memory amendment,,) = abi.decode(attestation.data, (string, uint256, string, string, string[]));
     ReviewRequest storage request = reviewRequests[requestName];
@@ -180,10 +212,25 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return false;
 	}
 
+  /// @notice Handles revocation of attestations
+  /// @dev Currently always returns true, to be implemented further
+  /// @return Always returns true
   function onRevoke(Attestation calldata /*attestation*/, uint256 /*value*/) internal pure override returns (bool) {
     return true;
   }
 
+  /// @notice Creates a new review form
+  /// @dev Only callable when the contract is not paused
+  /// @param _name The name of the review form
+  /// @param questions Array of questions for the review form
+  /// @param choices Array of choices for each question
+  /// @param questionTypes Array of types for each question
+  /// @custom:requires Name must not be null or empty
+  /// @custom:requires Review form name must be unique
+  /// @custom:requires Questions array cannot be empty
+  /// @custom:requires QuestionTypes array cannot be empty
+  /// @custom:requires Questions and types must have the same length
+  /// @custom:requires Questions and choices must have the same length
   function createReviewForm(string memory _name, string[] memory questions, string[][] memory choices, QuestionType[] memory questionTypes) external whenUnpaused {
     require(bytes(_name).length > 0, "Deresy: Name cannot be null or empty");
     require(reviewForms[_name].questions.length == 0, "Deresy: ReviewFormName already exists");
@@ -196,6 +243,27 @@ contract DeresyResolver is SchemaResolver, Ownable {
     emit CreatedReviewForm(_name);
   }
 
+  /// @notice Common function to create a review request
+  /// @dev Used internally by public functions to handle review request creation
+  /// @param _name The name of the review request
+  /// @param reviewers Array of reviewer addresses
+  /// @param hypercertIDs Array of hypercert IDs
+  /// @param hypercertIPFSHashes Array of hypercert IPFS hashes
+  /// @param formIpfsHash IPFS hash of the form
+  /// @param rewardPerReview Reward amount per review
+  /// @param reviewFormName Name of the review form
+  /// @param paymentTokenAddress Address of the payment token
+  /// @param isPayable Flag indicating if the request is payable
+  /// @custom:requires Request name must not be null or empty
+  /// @custom:requires Reviewers array cannot be empty
+  /// @custom:requires Hypercert IDs array cannot be empty
+  /// @custom:requires Hypercert IPFS hashes array cannot be empty
+  /// @custom:requires HypercertIDs and IPFS hashes must have the same length
+  /// @custom:requires Review form name must exist
+  /// @custom:requires Request name must be unique
+  /// @custom:requires Token must be whitelisted if used
+  /// @custom:requires Hypercerts must be valid
+  /// @custom:visibility internal
   function createReviewRequestCommon(
       string memory _name,
       address[] memory reviewers,
@@ -256,6 +324,17 @@ contract DeresyResolver is SchemaResolver, Ownable {
     emit CreatedReviewRequest(_name);
   }
 
+  /// @notice Creates a new payable review request
+  /// @dev This function creates a review request and allocates funds for it
+  /// @param _name The name of the review request
+  /// @param reviewers Array of addresses of the reviewers
+  /// @param hypercertIDs Array of hypercert IDs associated with the review
+  /// @param hypercertIPFSHashes Array of IPFS hashes for the hypercerts
+  /// @param formIpfsHash IPFS hash of the review form
+  /// @param rewardPerReview Amount of reward per review
+  /// @param paymentTokenAddress Address of the payment token
+  /// @param reviewFormName Name of the review form
+  /// @custom:requires The contract should not be paused
   function createRequest(
     string memory _name,
     address[] memory reviewers,
@@ -279,6 +358,15 @@ contract DeresyResolver is SchemaResolver, Ownable {
       );
   }
 
+  /// @notice Creates a new non-payable review request
+  /// @dev This function creates a review request without allocating any funds
+  /// @param _name The name of the review request
+  /// @param reviewers Array of addresses of the reviewers
+  /// @param hypercertIDs Array of hypercert IDs associated with the review
+  /// @param hypercertIPFSHashes Array of IPFS hashes for the hypercerts
+  /// @param formIpfsHash IPFS hash of the review form
+  /// @param reviewFormName Name of the review form
+  /// @custom:requires The contract should not be paused
   function createNonPayableRequest(
     string memory _name, 
     address[] memory reviewers, 
@@ -300,6 +388,11 @@ contract DeresyResolver is SchemaResolver, Ownable {
       );
   }
 
+  /// @notice Closes an existing review request
+  /// @dev Transfers remaining funds back to the sponsor and marks the request as closed
+  /// @param _name The name of the review request to close
+  /// @custom:requires msg.sender must be the sponsor of the review request
+  /// @custom:requires The review request must not already be closed
   function closeReviewRequest(string memory _name) external {
     require(msg.sender == reviewRequests[_name].sponsor, "Deresy: It is not the sponsor");
     require(reviewRequests[_name].isClosed == false,"Deresy: request closed");
@@ -308,32 +401,54 @@ contract DeresyResolver is SchemaResolver, Ownable {
     reviewRequests[_name].fundsLeft = 0;
     emit ClosedReviewRequest(_name);
   }
-
+  
+  /// @notice Retrieves details of a specific review request
+  /// @param _name The name of the review request
+  /// @return reviewRequest Returns the review request struct
   function getRequest(string memory _name) public view returns (ReviewRequest memory reviewRequest){
     return reviewRequests[_name];
   }
 
+  /// @notice Retrieves the review form associated with a specific review request
+  /// @param _name The name of the review request
+  /// @return requestReviewForm Returns the review form struct
   function getRequestReviewForm(string memory _name) public view returns(ReviewForm memory requestReviewForm){
     ReviewRequest storage request = reviewRequests[_name];
     return reviewForms[request.reviewFormName];
   }
 
+
+  /// @notice Retrieves a specific review form by name
+  /// @param _reviewFormName The name of the review form
+  /// @return reviewForm Returns the review form struct
   function getReviewForm(string memory _reviewFormName) public view returns(ReviewForm memory reviewForm){
     return reviewForms[_reviewFormName];
   }
 
+  /// @notice Retrieves the names of all review requests
+  /// @return An array of review request names
   function getReviewRequestsNames() public view returns(string[] memory){
     return reviewRequestNames;
   }
 
+  /// @notice Retrieves all whitelisted tokens
+  /// @return An array of addresses of the whitelisted tokens
   function getWhitelistedTokens() public view returns(address[] memory) {
     return whitelistedTokens;
   }
 
+
+  /// @notice Retrieves the names of all review forms
+  /// @return An array of review form names
   function getReviewFormsNames() public view returns(string[] memory) {
     return reviewFormsNames;
   }
 
+  /// @notice Checks if an address is a reviewer for a specific review request
+  /// @param reviewerAddress The address to check
+  /// @param _name The name of the review request
+  /// @return reviewerFound Returns true if the address is a reviewer, false otherwise
+  /// @custom:visibility internal
   function isReviewer(address reviewerAddress, string memory _name) internal view returns (bool) {
     bool reviewerFound = false;
     for (uint i = 0; i < reviewRequests[_name].reviewers.length; i++){
@@ -344,6 +459,12 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return reviewerFound;
   }
 
+  /// @notice Checks if a reviewer has already submitted a review for a specific hypercert
+  /// @param reviewerAddress The address of the reviewer
+  /// @param _name The name of the review request
+  /// @param hypercertID The ID of the hypercert
+  /// @return notReviewed Returns true if the review has not been submitted, false otherwise
+  /// @custom:visibility internal
   function hasSubmittedReview(address reviewerAddress, string memory _name, uint256 hypercertID) internal view returns (bool) {
     bool notReviewed = true;
     for(uint i = 0; i < reviewRequests[_name].reviews.length; i++) {
@@ -354,6 +475,11 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return notReviewed;
   }
 
+  /// @notice Validates the answers submitted in a review form
+  /// @param form The review form
+  /// @param answers Array of submitted answers
+  /// @return Returns true if all answers are valid, false otherwise
+  /// @custom:visibility internal
   function validateAnswers(ReviewForm storage form, string[] memory answers) internal view returns (bool) {
     for (uint256 i = 0; i < answers.length; i++) {
       if (form.questionTypes[i] == QuestionType.SingleChoice) {
@@ -383,6 +509,11 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return true;
   }
 
+  /// @notice Validates a hypercert ID against a list of request hypercert IDs
+  /// @param requestHypercertIDs Array of hypercert IDs from the request
+  /// @param hypercertID The hypercert ID to validate
+  /// @return Returns true if the hypercert ID is valid, false otherwise
+  /// @custom:visibility internal
   function validateHypercertID(uint256[] memory requestHypercertIDs, uint256 hypercertID) internal pure returns (bool) {
     for (uint256 i = 0; i < requestHypercertIDs.length; i++) {
       if (uint256(requestHypercertIDs[i]) == uint256(hypercertID)) {
@@ -392,6 +523,9 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return false;
   }
 
+  /// @notice Validates hypercert IDs for a request
+  /// @param hypercertIDs Array of hypercert IDs to validate
+  /// @return Returns true if all hypercert IDs are valid, false otherwise
   function validateRequestHypercerts(uint256[] memory hypercertIDs) internal returns (bool) {
     if (validateHypercertIDs) {
         for (uint256 i = 0; i < hypercertIDs.length; i++) {
@@ -402,24 +536,41 @@ contract DeresyResolver is SchemaResolver, Ownable {
         }
     }
     return true;
-}
+  }
 
+  /// @notice Sets the callback contract address
+  /// @param _callbackContractAddress The address of the callback contract
+  /// @custom:requires Only callable by the owner
+  /// @custom:requires Contract should not be paused
   function setCallbackContract(address _callbackContractAddress) external onlyOwner {
     callbackContract = IOnReviewable(_callbackContractAddress);
   }
 
+  /// @notice Sets the hypercert contract address
+  /// @param _hypercertContractAddress The address of the hypercert contract
+  /// @custom:requires Only callable by the owner
   function setHypercertContract(address _hypercertContractAddress) external onlyOwner {
     hypercertContract = IHypercertable(_hypercertContractAddress);
   }
 
+  /// @notice Enables or disables hypercert ID validation
+  /// @param _validateHypercertIDs Boolean flag to enable or disable validation
+  /// @custom:requires Only callable by the owner
+  /// @custom:requires Contract should not be paused
   function setValidateHypercertIDs(bool _validateHypercertIDs) external onlyOwner whenUnpaused {
     validateHypercertIDs = _validateHypercertIDs;
   }
 
+  /// @notice Sets the schema ID for reviews
+  /// @param _reviewsSchemaID The new schema ID
+  /// @custom:requires Only callable by the owner
 	function setReviewsSchemaID(bytes32 _reviewsSchemaID) external onlyOwner {
 		reviewsSchemaID = _reviewsSchemaID;
   }
 
+  /// @notice Sets the schema ID for amendments
+  /// @param _amendmentsSchemaID The new schema ID
+  /// @custom:requires Only callable by the owner
   function setAmendmentsSchemaID(bytes32 _amendmentsSchemaID) external onlyOwner {
 		amendmentsSchemaID = _amendmentsSchemaID;
   }
