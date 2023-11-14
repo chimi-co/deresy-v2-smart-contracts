@@ -33,6 +33,11 @@
 			},
 			{
 				"inputs": [],
+				"name": "InvalidLength",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "NotPayable",
 				"type": "error"
 			},
@@ -1109,7 +1114,6 @@
 			"kind": "dev",
 			"methods": {
 				"attest((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes))": {
-					"details": "Processes an attestation and verifies whether it's valid.",
 					"params": {
 						"attestation": "The new attestation."
 					},
@@ -1117,11 +1121,102 @@
 						"_0": "Whether the attestation is valid."
 					}
 				},
+				"closeReviewRequest(string)": {
+					"custom:requires": "msg.sender must be the sponsor of the review requestThe review request must not already be closed",
+					"details": "Transfers remaining funds back to the sponsor and marks the request as closed",
+					"params": {
+						"_name": "The name of the review request to close"
+					}
+				},
+				"createNonPayableRequest(string,address[],uint256[],string[],string,string)": {
+					"custom:requires": "The contract should not be paused",
+					"details": "This function creates a review request without allocating any funds",
+					"params": {
+						"_name": "The name of the review request",
+						"formIpfsHash": "IPFS hash of the review form",
+						"hypercertIDs": "Array of hypercert IDs associated with the review",
+						"hypercertIPFSHashes": "Array of IPFS hashes for the hypercerts",
+						"reviewFormName": "Name of the review form",
+						"reviewers": "Array of addresses of the reviewers"
+					}
+				},
+				"createRequest(string,address[],uint256[],string[],string,uint256,address,string)": {
+					"custom:requires": "The contract should not be paused",
+					"details": "This function creates a review request and allocates funds for it",
+					"params": {
+						"_name": "The name of the review request",
+						"formIpfsHash": "IPFS hash of the review form",
+						"hypercertIDs": "Array of hypercert IDs associated with the review",
+						"hypercertIPFSHashes": "Array of IPFS hashes for the hypercerts",
+						"paymentTokenAddress": "Address of the payment token",
+						"reviewFormName": "Name of the review form",
+						"reviewers": "Array of addresses of the reviewers",
+						"rewardPerReview": "Amount of reward per review"
+					}
+				},
+				"createReviewForm(string,string[],string[][],uint8[])": {
+					"custom:requires": "Name must not be null or emptyReview form name must be uniqueQuestions array cannot be emptyQuestionTypes array cannot be emptyQuestions and types must have the same lengthQuestions and choices must have the same length",
+					"details": "Only callable when the contract is not paused",
+					"params": {
+						"_name": "The name of the review form",
+						"choices": "Array of choices for each question",
+						"questionTypes": "Array of types for each question",
+						"questions": "Array of questions for the review form"
+					}
+				},
+				"getRequest(string)": {
+					"params": {
+						"_name": "The name of the review request"
+					},
+					"returns": {
+						"reviewRequest": "Returns the review request struct"
+					}
+				},
+				"getRequestReviewForm(string)": {
+					"params": {
+						"_name": "The name of the review request"
+					},
+					"returns": {
+						"requestReviewForm": "Returns the review form struct"
+					}
+				},
+				"getReviewForm(string)": {
+					"params": {
+						"_reviewFormName": "The name of the review form"
+					},
+					"returns": {
+						"reviewForm": "Returns the review form struct"
+					}
+				},
+				"getReviewFormsNames()": {
+					"returns": {
+						"_0": "An array of review form names"
+					}
+				},
+				"getReviewRequestsNames()": {
+					"returns": {
+						"_0": "An array of review request names"
+					}
+				},
+				"getWhitelistedTokens()": {
+					"returns": {
+						"_0": "An array of addresses of the whitelisted tokens"
+					}
+				},
 				"isPayable()": {
-					"details": "Returns whether the resolver supports ETH transfers."
+					"returns": {
+						"_0": "Whether the resolver supports ETH transfers."
+					}
+				},
+				"isTokenWhitelisted(address)": {
+					"params": {
+						"tokenAddress": "The address of the token to check"
+					},
+					"returns": {
+						"_0": "Returns true if the token is whitelisted, false otherwise"
+					}
 				},
 				"multiAttest((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes)[],uint256[])": {
-					"details": "Processes multiple attestations and verifies whether they are valid.",
 					"params": {
 						"attestations": "The new attestations.",
 						"values": "Explicit ETH amounts which were sent with each attestation."
@@ -1131,7 +1226,6 @@
 					}
 				},
 				"multiRevoke((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes)[],uint256[])": {
-					"details": "Processes revocation of multiple attestation and verifies they can be revoked.",
 					"params": {
 						"attestations": "The existing attestations to be revoked.",
 						"values": "Explicit ETH amounts which were sent with each revocation."
@@ -1143,11 +1237,13 @@
 				"owner()": {
 					"details": "Returns the address of the current owner."
 				},
+				"pause()": {
+					"details": "Only callable by the contract owner and when the contract is not paused"
+				},
 				"renounceOwnership()": {
 					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
 				},
 				"revoke((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes))": {
-					"details": "Processes an attestation revocation and verifies if it can be revoked.",
 					"params": {
 						"attestation": "The existing attestation to be revoked."
 					},
@@ -1155,12 +1251,59 @@
 						"_0": "Whether the attestation can be revoked."
 					}
 				},
+				"setAmendmentsSchemaID(bytes32)": {
+					"custom:requires": "Only callable by the owner",
+					"params": {
+						"_amendmentsSchemaID": "The new schema ID"
+					}
+				},
+				"setCallbackContract(address)": {
+					"custom:requires": "Only callable by the ownerContract should not be paused",
+					"params": {
+						"_callbackContractAddress": "The address of the callback contract"
+					}
+				},
+				"setHypercertContract(address)": {
+					"custom:requires": "Only callable by the owner",
+					"params": {
+						"_hypercertContractAddress": "The address of the hypercert contract"
+					}
+				},
+				"setReviewsSchemaID(bytes32)": {
+					"custom:requires": "Only callable by the owner",
+					"params": {
+						"_reviewsSchemaID": "The new schema ID"
+					}
+				},
+				"setValidateHypercertIDs(bool)": {
+					"custom:requires": "Only callable by the owner",
+					"params": {
+						"_validateHypercertIDs": "Boolean flag to enable or disable validation"
+					}
+				},
 				"transferOwnership(address)": {
 					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				},
+				"unpause()": {
+					"details": "Only callable by the contract owner"
+				},
+				"unwhitelistToken(address)": {
+					"custom:requires": "Token must be in the whitelist",
+					"details": "Only callable by the contract owner",
+					"params": {
+						"tokenAddress": "The address of the token to be removed from the whitelist"
+					}
 				},
 				"version()": {
 					"returns": {
 						"_0": "Semver contract version as a string."
+					}
+				},
+				"whitelistToken(address)": {
+					"custom:requires": "Token must not already be whitelisted",
+					"details": "Only callable by the contract owner",
+					"params": {
+						"tokenAddress": "The address of the token to be whitelisted"
 					}
 				}
 			},
@@ -1169,8 +1312,83 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
+				"attest((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes))": {
+					"notice": "Processes an attestation and verifies whether it's valid."
+				},
+				"closeReviewRequest(string)": {
+					"notice": "Closes an existing review request"
+				},
+				"createNonPayableRequest(string,address[],uint256[],string[],string,string)": {
+					"notice": "Creates a new non-payable review request"
+				},
+				"createRequest(string,address[],uint256[],string[],string,uint256,address,string)": {
+					"notice": "Creates a new payable review request"
+				},
+				"createReviewForm(string,string[],string[][],uint8[])": {
+					"notice": "Creates a new review form"
+				},
+				"getRequest(string)": {
+					"notice": "Retrieves details of a specific review request"
+				},
+				"getRequestReviewForm(string)": {
+					"notice": "Retrieves the review form associated with a specific review request"
+				},
+				"getReviewForm(string)": {
+					"notice": "Retrieves a specific review form by name"
+				},
+				"getReviewFormsNames()": {
+					"notice": "Retrieves the names of all review forms"
+				},
+				"getReviewRequestsNames()": {
+					"notice": "Retrieves the names of all review requests"
+				},
+				"getWhitelistedTokens()": {
+					"notice": "Retrieves all whitelisted tokens"
+				},
+				"isPayable()": {
+					"notice": "Checks if the resolver can be sent ETH."
+				},
+				"isTokenWhitelisted(address)": {
+					"notice": "Checks if a token is whitelisted"
+				},
+				"multiAttest((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes)[],uint256[])": {
+					"notice": "Processes multiple attestations and verifies whether they are valid."
+				},
+				"multiRevoke((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes)[],uint256[])": {
+					"notice": "Processes revocation of multiple attestation and verifies they can be revoked."
+				},
+				"pause()": {
+					"notice": "Pauses the contract"
+				},
+				"revoke((bytes32,bytes32,uint64,uint64,uint64,bytes32,address,address,bool,bytes))": {
+					"notice": "Processes an attestation revocation and verifies if it can be revoked."
+				},
+				"setAmendmentsSchemaID(bytes32)": {
+					"notice": "Sets the schema ID for amendments"
+				},
+				"setCallbackContract(address)": {
+					"notice": "Sets the callback contract address"
+				},
+				"setHypercertContract(address)": {
+					"notice": "Sets the hypercert contract address"
+				},
+				"setReviewsSchemaID(bytes32)": {
+					"notice": "Sets the schema ID for reviews"
+				},
+				"setValidateHypercertIDs(bool)": {
+					"notice": "Enables or disables hypercert ID validation"
+				},
+				"unpause()": {
+					"notice": "Unpauses the contract"
+				},
+				"unwhitelistToken(address)": {
+					"notice": "Removes a token from the whitelist"
+				},
 				"version()": {
 					"notice": "Returns the full semver contract version."
+				},
+				"whitelistToken(address)": {
+					"notice": "Adds a token to the whitelist"
 				}
 			},
 			"version": 1
@@ -1193,51 +1411,51 @@
 	},
 	"sources": {
 		"@ethereum-attestation-service/eas-contracts/contracts/Common.sol": {
-			"keccak256": "0x4bab9ec76bdb009e9fb505c45a679d39c9e80771eb13ed901029a1068025752a",
+			"keccak256": "0x957bd2e6d0d6d637f86208b135c29fbaf4412cb08e5e7a61ede16b80561bf685",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f7eee2a67a0951a97f07b15335a1553068c7bb5e208bb2a2c0d90cdff32b9280",
-				"dweb:/ipfs/QmVBUCtd2Yocadu7nYZKZKePDyvU1BkYaNdSX2C5kvhCsg"
+				"bzz-raw://da1dc9aedbb1d4d39c46c2235918d3adfbc5741dd34a46010cf425d134e7936d",
+				"dweb:/ipfs/QmWUk6bXnLaghS2riF3GTFEeURCzgYFMA5woa6AsgPwEgc"
 			]
 		},
 		"@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol": {
-			"keccak256": "0xd530be686226f3c8d7b02bb59797901620f64749a02228539afc8b082a1ee036",
+			"keccak256": "0xd5a192f0bcee5372b69b0bb746c26317a2691dd10bfa52adbd08a9b723a55036",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4ba131bf90235d1a9ce53c013e238a9c1c4fbe670b8eac6b598adc6986ef5f65",
-				"dweb:/ipfs/QmeNjveV6LP8Wp4aRuziwZB4pNaVnBnGw8cbmHjKcwxyRK"
+				"bzz-raw://ca836dd01016e7198a0b8e9e79d78512eb9db86dde6afd47f727f18d9a9c33a1",
+				"dweb:/ipfs/QmXLTzcLUvA52qpVRUtVvj6L73cTmHk62jGsf6JErXFxD4"
 			]
 		},
 		"@ethereum-attestation-service/eas-contracts/contracts/ISchemaRegistry.sol": {
-			"keccak256": "0xef47e449dd02bd034e26b1dea505ce533906f8462fc674c938ed0e872a68d640",
+			"keccak256": "0x772b1ebcf3e5c93fecb53762e11bbdae75fcb667deea4ac21134fccfe78326e4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://62f96084887d44e3e2c91c2b020f861d36ffcce620ee1312ed330653d999930d",
-				"dweb:/ipfs/QmWXrErdfQxoFsJw8L4kaKHqPLX3Zg9ruf9FJvyMRatF8S"
+				"bzz-raw://734ea6ab1e3bea7d8e0d478731c3b8888347ec01601d66d3072398b8984e8517",
+				"dweb:/ipfs/QmQHZM7USiV88SUucWV7wwCpURv98dDngtFcsEaEnFwdtp"
 			]
 		},
 		"@ethereum-attestation-service/eas-contracts/contracts/Semver.sol": {
-			"keccak256": "0xdd3bfff2af5b5cea194f5a771080d13ad458040825b148e0d7eb65f6e3a2a7c7",
+			"keccak256": "0x5883c852730b00d73b10475f3b382afce8f30b89f337078ec03a66c463e048a8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d8ec74a212f9179ecc5b93692ad10e747f7c20cbec84ee4a9e13c3b9a0178450",
-				"dweb:/ipfs/QmYe5Rj6GHChALgjZKrTKTBqgfLwBNBefLk3BW1h5kZuJp"
+				"bzz-raw://0ab7f1cf03a19860d07100bd61a8138346c5682bced5dbc569847d35241ba1fd",
+				"dweb:/ipfs/QmfTTnWbarxDZuUCCextgxrTcATy1N1XoPBmFYj2nQZJUG"
 			]
 		},
 		"@ethereum-attestation-service/eas-contracts/contracts/resolver/ISchemaResolver.sol": {
-			"keccak256": "0xc628c6540da258f76192eaa34c21699c9cbcc4a4029d7ee04e88dc9c18c981fd",
+			"keccak256": "0xb74b64e20b90b35004750d2c78ceb114a304975d22d71bd9a2a9de0d483f0395",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a2229a862abb07e2ee6d1d511ab8a4326035d450b67a617b957b1117602ba5d6",
-				"dweb:/ipfs/QmTSV7fYuoxwU8GmsgWttHWTEbiZdVhs846k4B2tficPvP"
+				"bzz-raw://0d0a30499e28e7c4ed62f2d8a88c46623c96830cc23e04ce6e9cd0cd0b11a03d",
+				"dweb:/ipfs/QmYWNWu1cn7XDSaFgiMyn2L2coud3DNiGoNrNNo8QYcdyC"
 			]
 		},
 		"@ethereum-attestation-service/eas-contracts/contracts/resolver/SchemaResolver.sol": {
-			"keccak256": "0x8bac9997f3c6b2e9a165342e35c1263d1942ce55a98ecbe0aa6ec84fcb6538d7",
+			"keccak256": "0x0c0533594956d3a7d861a68127825cbde3bc9a89979ece3aa99c3820f4c5a251",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://09ad22e31d8c874f26ac1005bd724279f01e3aa3c59d9aa2864398adbf803171",
-				"dweb:/ipfs/QmUUMgN8YrUJUpnwNwNtttGn1uTnPGH4Zaa4mEMG7bkAu5"
+				"bzz-raw://487e5c67f3d347f6f99b0857155aebbb015f63666ab46c57dffc72a7c6f5c06f",
+				"dweb:/ipfs/QmeTmXPtumpWVxGY2NXQG3Fma73vh3Bjb6diuUHK52mpPD"
 			]
 		},
 		"@openzeppelin/contracts/access/Ownable.sol": {
@@ -1289,11 +1507,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x3330f2091fca6d722c88877ec5aa9ba8281474d6ac5b662d252c21bfa96d7a95",
-			"license": "MIT",
+			"keccak256": "0x8eb7f8c34b8608bd087c51a2cc8a12851b98a6b61d2f1f9d8962d2aebada8076",
+			"license": "AGPL-3.0-only",
 			"urls": [
-				"bzz-raw://3fb2eb37184e659b2e7bc2f52787420684d08092cb01a8c07f7cb888bb768e75",
-				"dweb:/ipfs/QmfEyPkLNSfeDznhdz6fPPL3RyG8gdyG7rTrhHRmBAiw6M"
+				"bzz-raw://81db8e1b83b90b177f5a1fa21ceac0943cb877973246a72c12361db41c6d5aab",
+				"dweb:/ipfs/QmPyJUL32rTyFMTxyqXnQDBheC84HzWUpqjeWY52qQNha7"
 			]
 		},
 		"contracts/interfaces/IHypercertable.sol": {
