@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.19;
 import { SchemaResolver } from "@ethereum-attestation-service/eas-contracts/contracts/resolver/SchemaResolver.sol";
 import { IEAS, Attestation } from "@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol";
@@ -523,7 +523,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     return false;
   }
 
-  /// @notice Validates hypercert IDs for a request
+  /// @notice Validates hypercert IDs for a request against the hypercert contract
   /// @param hypercertIDs Array of hypercert IDs to validate
   /// @return Returns true if all hypercert IDs are valid, false otherwise
   function validateRequestHypercerts(uint256[] memory hypercertIDs) internal returns (bool) {
@@ -556,8 +556,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
   /// @notice Enables or disables hypercert ID validation
   /// @param _validateHypercertIDs Boolean flag to enable or disable validation
   /// @custom:requires Only callable by the owner
-  /// @custom:requires Contract should not be paused
-  function setValidateHypercertIDs(bool _validateHypercertIDs) external onlyOwner whenUnpaused {
+  function setValidateHypercertIDs(bool _validateHypercertIDs) external onlyOwner {
     validateHypercertIDs = _validateHypercertIDs;
   }
 

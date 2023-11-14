@@ -31,9 +31,29 @@ contract('DeresyResolver', (accounts) => {
     await deresyResolver.setValidateHypercertIDs(false)
   })
 
+  describe('Ownership', async () => {
+    it("should be owned by the deployer", async () => {
+      let owner = await deresyResolver.owner()
+      assert.equal(owner, ownerAddress)
+    })
+
+    it("should be able to transfer ownership if owner", async () => {
+      await deresyResolver.transferOwnership(reviewerAddress1, { from: ownerAddress })
+      let newOwner = await deresyResolver.owner()
+      assert.equal(newOwner, reviewerAddress1)
+    })
+/*
+    it("should revert if not owner tries to transfer ownership", async () => {
+      await truffleAssert.reverts(deresyResolver.transferOwnership(reviewerAddress2, { from: reviewerAddress1 }))
+      let newOwner = await deresyResolver.owner()
+      assert.equal(newOwner, reviewerAddress1)
+    }) */
+  })
+
   // Create Review Form ----------
   describe('Create Review Form', async () => {
     it("should create a review form if data is correct", async () => {
+      await deresyResolver.transferOwnership(ownerAddress, { from: reviewerAddress1 })
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = ["2", "1"]
       let choicesArray = [["choice1", "choice2"], []]
