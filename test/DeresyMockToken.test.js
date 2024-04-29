@@ -46,13 +46,14 @@ contract('DeresyMockToken', (accounts) => {
 
       const requestName = "RRC1"
       let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
+      let reviewersContracts = []
       let hypercertsArray = [hypercertID1, hypercertID2]
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
 
       await deresyMockTokens.approve(deresyResolver.address, web3.utils.toWei("1", "ether"));
 
-      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, deresyMockTokens.address, reviewFormName, { from: ownerAddress, value: 0 }))
+      await truffleAssert.passes(deresyResolver.createRequest(requestName, reviewersArray, reviewersContracts, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewersArray.length, deresyMockTokens.address, reviewFormName, { from: ownerAddress, value: 0 }))
 
       const balanceAfter = await deresyMockTokens.balanceOf(ownerAddress);
       assert.equal(balanceAfter.toString(), web3.utils.toWei("99.94", "ether"));
@@ -77,13 +78,14 @@ contract('DeresyMockToken', (accounts) => {
 
       const requestName = "RRC1"
       let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
+      let reviewersContracts = []
       let hypercertsArray = [hypercertID1, hypercertID2]
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
 
       // In this line, ERC-20 token approval should be done, for test purposes we don't use it.
 
-      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, deresyMockTokens.address, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, reviewersContracts, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewersArray.length, deresyMockTokens.address, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }))
     })
   })
 

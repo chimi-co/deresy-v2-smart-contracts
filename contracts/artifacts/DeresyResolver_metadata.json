@@ -332,6 +332,11 @@
 						"type": "address[]"
 					},
 					{
+						"internalType": "address[]",
+						"name": "reviewerContracts",
+						"type": "address[]"
+					},
+					{
 						"internalType": "uint256[]",
 						"name": "hypercertIDs",
 						"type": "uint256[]"
@@ -370,6 +375,11 @@
 						"type": "address[]"
 					},
 					{
+						"internalType": "address[]",
+						"name": "reviewerContracts",
+						"type": "address[]"
+					},
+					{
 						"internalType": "uint256[]",
 						"name": "hypercertIDs",
 						"type": "uint256[]"
@@ -388,6 +398,11 @@
 						"internalType": "uint256",
 						"name": "rewardPerReview",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "reviewsPerHypercert",
+						"type": "uint8"
 					},
 					{
 						"internalType": "address",
@@ -456,6 +471,11 @@
 								"type": "address[]"
 							},
 							{
+								"internalType": "address[]",
+								"name": "reviewerContracts",
+								"type": "address[]"
+							},
+							{
 								"internalType": "uint256[]",
 								"name": "hypercertIDs",
 								"type": "uint256[]"
@@ -474,6 +494,11 @@
 								"internalType": "uint256",
 								"name": "rewardPerReview",
 								"type": "uint256"
+							},
+							{
+								"internalType": "uint8",
+								"name": "reviewsPerHypercert",
+								"type": "uint8"
 							},
 							{
 								"components": [
@@ -671,6 +696,30 @@
 					}
 				],
 				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "reviewerAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					}
+				],
+				"name": "isReviewer",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -1128,7 +1177,7 @@
 						"_name": "The name of the review request to close"
 					}
 				},
-				"createNonPayableRequest(string,address[],uint256[],string[],string,string)": {
+				"createNonPayableRequest(string,address[],address[],uint256[],string[],string,string)": {
 					"custom:requires": "The contract should not be paused",
 					"details": "This function creates a review request without allocating any funds",
 					"params": {
@@ -1140,7 +1189,7 @@
 						"reviewers": "Array of addresses of the reviewers"
 					}
 				},
-				"createRequest(string,address[],uint256[],string[],string,uint256,address,string)": {
+				"createRequest(string,address[],address[],uint256[],string[],string,uint256,uint8,address,string)": {
 					"custom:requires": "The contract should not be paused",
 					"details": "This function creates a review request and allocates funds for it",
 					"params": {
@@ -1206,6 +1255,16 @@
 				"isPayable()": {
 					"returns": {
 						"_0": "Whether the resolver supports ETH transfers."
+					}
+				},
+				"isReviewer(address,string)": {
+					"custom:visibility": "external",
+					"params": {
+						"_name": "The name of the review request",
+						"reviewerAddress": "The address to check"
+					},
+					"returns": {
+						"_0": "reviewerFound Returns true if the address is a reviewer, false otherwise"
 					}
 				},
 				"isTokenWhitelisted(address)": {
@@ -1318,10 +1377,10 @@
 				"closeReviewRequest(string)": {
 					"notice": "Closes an existing review request"
 				},
-				"createNonPayableRequest(string,address[],uint256[],string[],string,string)": {
+				"createNonPayableRequest(string,address[],address[],uint256[],string[],string,string)": {
 					"notice": "Creates a new non-payable review request"
 				},
-				"createRequest(string,address[],uint256[],string[],string,uint256,address,string)": {
+				"createRequest(string,address[],address[],uint256[],string[],string,uint256,uint8,address,string)": {
 					"notice": "Creates a new payable review request"
 				},
 				"createReviewForm(string,string[],string[][],uint8[])": {
@@ -1347,6 +1406,9 @@
 				},
 				"isPayable()": {
 					"notice": "Checks if the resolver can be sent ETH."
+				},
+				"isReviewer(address,string)": {
+					"notice": "Checks if an address is a reviewer for a specific review request"
 				},
 				"isTokenWhitelisted(address)": {
 					"notice": "Checks if a token is whitelisted"
@@ -1474,6 +1536,14 @@
 				"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53"
 			]
 		},
+		"@openzeppelin/contracts/token/ERC721/IERC721.sol": {
+			"keccak256": "0x5bce51e11f7d194b79ea59fe00c9e8de9fa2c5530124960f29a24d4c740a3266",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7e66dfde185df46104c11bc89d08fa0760737aa59a2b8546a656473d810a8ea4",
+				"dweb:/ipfs/QmXvyqtXPaPss2PD7eqPoSao5Szm2n6UMoiG8TZZDjmChR"
+			]
+		},
 		"@openzeppelin/contracts/utils/Context.sol": {
 			"keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
 			"license": "MIT",
@@ -1488,6 +1558,14 @@
 			"urls": [
 				"bzz-raw://b81d9ff6559ea5c47fc573e17ece6d9ba5d6839e213e6ebc3b4c5c8fe4199d7f",
 				"dweb:/ipfs/QmPCW1bFisUzJkyjroY3yipwfism9RRCigCcK1hbXtVM8n"
+			]
+		},
+		"@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+			"keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+				"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
 			]
 		},
 		"@openzeppelin/contracts/utils/math/Math.sol": {
@@ -1507,11 +1585,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0x8eb7f8c34b8608bd087c51a2cc8a12851b98a6b61d2f1f9d8962d2aebada8076",
+			"keccak256": "0xb247cfcebbe3747749c09c0c16370f9e7b5adff048accbada67e8f2d76920825",
 			"license": "AGPL-3.0-only",
 			"urls": [
-				"bzz-raw://81db8e1b83b90b177f5a1fa21ceac0943cb877973246a72c12361db41c6d5aab",
-				"dweb:/ipfs/QmPyJUL32rTyFMTxyqXnQDBheC84HzWUpqjeWY52qQNha7"
+				"bzz-raw://c80eeb869bf887d2d370c591f3c658d5fcf29085319a73a5c74b2937211e0054",
+				"dweb:/ipfs/QmZDhNrY6ZjbRZVXrpwYbgcR6N5jCFcV4GGGMvM3KVfbmS"
 			]
 		},
 		"contracts/interfaces/IHypercertable.sol": {

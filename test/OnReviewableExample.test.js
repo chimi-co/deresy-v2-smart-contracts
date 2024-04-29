@@ -59,22 +59,25 @@ contract('OnReviewableExample', (accounts) => {
 
       const requestName = "ORE1"
       let reviewersArray = [reviewerAddress1, reviewerAddress2]
+      let reviewersContracts = []
       let hypercertsArray = [hypercertID1, hypercertID2]
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       
-      await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+      await deresyAttestations.createRequest(requestName, reviewersArray, reviewersContracts, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewersArray.length, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
       let answersArray = ["choice1", "Yes"]
       const abi = [
         { type: 'string', name: 'requestName' },
         { type: 'uint256', name: 'hypercertID' },
         { type: 'string[]', name: 'answers' },
+        { type: 'string[]', name: 'questions' },
+        { type: 'string[]', name: 'questionTypes' },
         { type: 'string', name: 'pdfIpfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
       ];
 
-      const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash", []]);
+      const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
       const attestation1 = {
         uid: attestationUID1,
         schema: reviewsSchemaUID,
@@ -89,7 +92,7 @@ contract('OnReviewableExample', (accounts) => {
       };
       await deresyAttestations.deresyAttestation(attestation1, { from: reviewerAddress2, value: 0 })
 
-      const encodedData2 = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID2, answersArray, "pdfIpfsHash", []]);
+      const encodedData2 = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID2, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
       const attestation2 = {
         uid: attestationUID2,
         schema: reviewsSchemaUID,
@@ -123,22 +126,25 @@ contract('OnReviewableExample', (accounts) => {
 
     const requestName = "ORE2"
     let reviewersArray = [reviewerAddress1, reviewerAddress2]
+    let reviewersContracts = []
     let hypercertsArray = [hypercertID1, hypercertID2]
     let hypercertsIPFSHashes = ["hash1", "hash2"]
     let ipfsHash = "hash"
     
-    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+    await deresyAttestations.createRequest(requestName, reviewersArray, reviewersContracts, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewersArray.length, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
     let answersArray = ["choice1", "Yes"]
     const abi = [
       { type: 'string', name: 'requestName' },
       { type: 'uint256', name: 'hypercertID' },
       { type: 'string[]', name: 'answers' },
+      { type: 'string[]', name: 'questions' },
+      { type: 'string[]', name: 'questionTypes' },
       { type: 'string', name: 'pdfIpfsHash' },
       { type: 'string[]', name: 'attachmentsIpfsHashes' },
     ];
     
-    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash", []]);
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
     const attestation1 = {
       uid: attestationUID1,
       schema: reviewsSchemaUID,
@@ -171,22 +177,25 @@ contract('OnReviewableExample', (accounts) => {
 
     const requestName = "ORE3"
     let reviewersArray = [reviewerAddress1, reviewerAddress2]
+    let reviewersContracts = []
     let hypercertsArray = [hypercertID1, hypercertID2]
     let hypercertsIPFSHashes = ["hash1", "hash2"]
     let ipfsHash = "hash"
     
-    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+    await deresyAttestations.createRequest(requestName, reviewersArray, reviewersContracts, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewersArray.length, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
     let answersArray = ["choice1", "Yes"]
     const abi = [
       { type: 'string', name: 'requestName' },
       { type: 'uint256', name: 'hypercertID' },
       { type: 'string[]', name: 'answers' },
+      { type: 'string[]', name: 'questions' },
+      { type: 'string[]', name: 'questionTypes' },
       { type: 'string', name: 'pdfIpfsHash' },
       { type: 'string[]', name: 'attachmentsIpfsHashes' },
     ];
     
-    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash", []]);
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
     const attestation1 = {
       uid: attestationUID1,
       schema: reviewsSchemaUID,
@@ -214,22 +223,25 @@ contract('OnReviewableExample', (accounts) => {
 
     const requestName = "ORE4"
     let reviewersArray = [reviewerAddress1, reviewerAddress2]
+    let reviewersContracts = []
     let hypercertsArray = [hypercertID1, hypercertID2]
     let hypercertsIPFSHashes = ["hash1", "hash2"]
     let ipfsHash = "hash"
     
-    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+    await deresyAttestations.createRequest(requestName, reviewersArray, reviewersContracts, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewersArray.length, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
     let answersArray = ["choice1", ""]
     const abi = [
       { type: 'string', name: 'requestName' },
       { type: 'uint256', name: 'hypercertID' },
       { type: 'string[]', name: 'answers' },
+      { type: 'string[]', name: 'questions' },
+      { type: 'string[]', name: 'questionTypes' },
       { type: 'string', name: 'pdfIpfsHash' },
       { type: 'string[]', name: 'attachmentsIpfsHashes' },
     ];
     
-    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash", []]);
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
     const attestation1 = {
       uid: attestationUID1,
       schema: reviewsSchemaUID,
@@ -257,22 +269,25 @@ contract('OnReviewableExample', (accounts) => {
 
     const requestName = "ORE5"
     let reviewersArray = [reviewerAddress1, reviewerAddress2]
+    let reviewersContracts = []
     let hypercertsArray = [hypercertID1, hypercertID2]
     let hypercertsIPFSHashes = ["hash1", "hash2"]
     let ipfsHash = "hash"
 
-    await deresyAttestations.createRequest(requestName, reviewersArray, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
+    await deresyAttestations.createRequest(requestName, reviewersArray, reviewersContracts, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewersArray.length, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length })
 
     let answersArray = ["choice1", "Yes"]
     const abi = [
       { type: 'string', name: 'requestName' },
       { type: 'uint256', name: 'hypercertID' },
       { type: 'string[]', name: 'answers' },
+      { type: 'string[]', name: 'questions' },
+      { type: 'string[]', name: 'questionTypes' },
       { type: 'string', name: 'pdfIpfsHash' },
       { type: 'string[]', name: 'attachmentsIpfsHashes' },
     ];
     
-    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, "pdfIpfsHash", []]);
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
     const attestation1 = {
       uid: attestationUID1,
       schema: reviewsSchemaUID,

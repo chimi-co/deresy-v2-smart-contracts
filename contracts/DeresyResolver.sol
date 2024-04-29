@@ -3,6 +3,7 @@ pragma solidity 0.8.19;
 import { SchemaResolver } from "@ethereum-attestation-service/eas-contracts/contracts/resolver/SchemaResolver.sol";
 import { IEAS, Attestation } from "@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IOnReviewable.sol";
 import "./interfaces/IHypercertable.sol";
@@ -10,6 +11,7 @@ import "./interfaces/IHypercertable.sol";
 contract DeresyResolver is SchemaResolver, Ownable {
   IOnReviewable public callbackContract;
   IHypercertable public hypercertContract;
+
   enum QuestionType {Text, Checkbox, SingleChoice}
 
   struct ReviewForm {
@@ -28,10 +30,12 @@ contract DeresyResolver is SchemaResolver, Ownable {
   struct ReviewRequest {
     address sponsor;
     address[] reviewers;
+    address[] reviewerContracts;
     uint256[] hypercertIDs;
     string[] hypercertIPFSHashes;
     string formIpfsHash;
     uint256 rewardPerReview;
+    uint8 reviewsPerHypercert;
     Review[] reviews;
     bool isClosed;
     address paymentTokenAddress;
@@ -150,13 +154,17 @@ contract DeresyResolver is SchemaResolver, Ownable {
   /// @return Returns true if the review is valid and processed, false otherwise
   /// @custom:visibility internal
 	function processReview(Attestation calldata attestation) internal returns (bool) {
-		(string memory requestName, uint256 hypercertID, string[] memory answers,,) = abi.decode(attestation.data, (string, uint256, string[], string, string[]));
+		(string memory requestName, uint256 hypercertID, string[] memory answers,,,,) = abi.decode(attestation.data, (string, uint256, string[], string[], string[], string, string[]));
     ReviewRequest storage request = reviewRequests[requestName];
     ReviewForm storage requestForm = reviewForms[request.reviewFormName];
     address attester = attestation.attester;
     bytes32 attestationID = attestation.uid;
 
-    bool isValid = !request.isClosed && validateHypercertID(request.hypercertIDs, hypercertID) && requestForm.questions.length == answers.length && isReviewer(attester, requestName) && hasSubmittedReview(attester, requestName, hypercertID) && validateAnswers(requestForm, answers);
+    if(request.rewardPerReview > 0) {
+      require(getNumberOfReviewsForHypercert(requestName, hypercertID) < request.reviewsPerHypercert, "Deresy: Max reviews per hypercert exceeded");
+    }
+
+    bool isValid = !request.isClosed && validateHypercertID(request.hypercertIDs, hypercertID) && requestForm.questions.length == answers.length && _isReviewer(attester, requestName) && hasSubmittedReview(attester, requestName, hypercertID) && validateAnswers(requestForm, answers);
 
     if(isValid){
       request.reviews.push(Review(attester,hypercertID, attestationID, new bytes32[] (0)));
@@ -267,16 +275,18 @@ contract DeresyResolver is SchemaResolver, Ownable {
   function createReviewRequestCommon(
       string memory _name,
       address[] memory reviewers,
+      address[] memory reviewerContracts,
       uint256[] memory hypercertIDs,
       string[] memory hypercertIPFSHashes,
       string memory formIpfsHash,
       uint256 rewardPerReview,
+      uint8 reviewsPerHypercert,
       string memory reviewFormName,
       address paymentTokenAddress,
       bool isPayable
   ) internal {
     require(bytes(_name).length > 0, "Deresy: RequestName cannot be null or empty");
-    require(reviewers.length > 0, "Deresy: Reviewers cannot be null");
+    require(reviewers.length > 0 || reviewerContracts.length > 0, "Deresy: Reviewers cannot be null");
     require(hypercertIDs.length > 0, "Deresy: Hypercert IDs cannot be null");
     require(hypercertIPFSHashes.length > 0, "Deresy: Hypercerts IPFS hashes cannot be null");
     require(hypercertIDs.length == hypercertIPFSHashes.length, "Deresy: HypercertIDs and HypercertIPFSHashes array must have the same length");
@@ -291,8 +301,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
       require(rewardPerReview > 0, "Deresy: rewardPerReview must be greater than zero for payable request");
 
       if (paymentTokenAddress == address(0)) {
-        require(msg.value >= ((reviewers.length * hypercertIDs.length) * rewardPerReview), "Deresy: msg.value invalid");
-
+        require(msg.value >= ((reviewsPerHypercert * hypercertIDs.length) * rewardPerReview), "Deresy: msg.value invalid");
         tokenFundsAmount = msg.value;
       } else {
         require(msg.value == 0, "Deresy: msg.value is invalid");
@@ -311,10 +320,12 @@ contract DeresyResolver is SchemaResolver, Ownable {
     
     reviewRequests[_name].sponsor = msg.sender;
     reviewRequests[_name].reviewers = reviewers;
+    reviewRequests[_name].reviewerContracts = reviewerContracts;
     reviewRequests[_name].hypercertIDs = hypercertIDs;
     reviewRequests[_name].hypercertIPFSHashes = hypercertIPFSHashes;
     reviewRequests[_name].formIpfsHash = formIpfsHash;
     reviewRequests[_name].rewardPerReview = isPayable ? rewardPerReview : 0;
+    reviewRequests[_name].reviewsPerHypercert = reviewsPerHypercert;
     reviewRequests[_name].isClosed = false;
     reviewRequests[_name].paymentTokenAddress = paymentTokenAddress;
     reviewRequests[_name].fundsLeft = isPayable ? tokenFundsAmount : 0;
@@ -338,20 +349,25 @@ contract DeresyResolver is SchemaResolver, Ownable {
   function createRequest(
     string memory _name,
     address[] memory reviewers,
+    address[] memory reviewerContracts,
     uint256[] memory hypercertIDs,
     string[] memory hypercertIPFSHashes,
     string memory formIpfsHash,
     uint256 rewardPerReview,
+    uint8 reviewsPerHypercert,
     address paymentTokenAddress,
     string memory reviewFormName
   ) external payable whenUnpaused {
+      require(rewardPerReview > 0, "Deresy: Reward per review must be greater than zero for payed requests");
       createReviewRequestCommon(
         _name,
         reviewers,
+        reviewerContracts,
         hypercertIDs,
         hypercertIPFSHashes,
         formIpfsHash,
         rewardPerReview,
+        reviewsPerHypercert,
         reviewFormName,
         paymentTokenAddress,
         true
@@ -369,7 +385,8 @@ contract DeresyResolver is SchemaResolver, Ownable {
   /// @custom:requires The contract should not be paused
   function createNonPayableRequest(
     string memory _name, 
-    address[] memory reviewers, 
+    address[] memory reviewers,
+    address[] memory reviewerContracts,
     uint256[] memory hypercertIDs, 
     string[] memory hypercertIPFSHashes, 
     string memory formIpfsHash,
@@ -377,10 +394,12 @@ contract DeresyResolver is SchemaResolver, Ownable {
   ) external whenUnpaused {
       createReviewRequestCommon(
         _name, 
-        reviewers, 
+        reviewers,
+        reviewerContracts,
         hypercertIDs, 
         hypercertIPFSHashes,
         formIpfsHash,
+        0,
         0,
         reviewFormName,
         address(0),
@@ -449,14 +468,36 @@ contract DeresyResolver is SchemaResolver, Ownable {
   /// @param _name The name of the review request
   /// @return reviewerFound Returns true if the address is a reviewer, false otherwise
   /// @custom:visibility internal
-  function isReviewer(address reviewerAddress, string memory _name) internal view returns (bool) {
-    bool reviewerFound = false;
+  function _isReviewer(address reviewerAddress, string memory _name) internal view returns (bool) {
     for (uint i = 0; i < reviewRequests[_name].reviewers.length; i++){
       if(reviewRequests[_name].reviewers[i] == reviewerAddress){
-        reviewerFound = true;
+        return true;
       }
     }
-    return reviewerFound;
+    for (uint j = 0; j < reviewRequests[_name].reviewerContracts.length; j++) {
+      address erc721Address = reviewRequests[_name].reviewerContracts[j];
+      IERC721 erc721 = IERC721(erc721Address);
+      // Check if the balance of the address in the ERC721 contract is greater than 0
+      if (erc721.balanceOf(reviewerAddress) > 0) {
+          return true;
+      }
+    }
+    return false;
+  }
+
+  /// @notice Returns the total revuews in a review request for a specific hypercertID
+  /// @param _name The name of the review request
+  /// @param hypercertID The name of the review request
+  /// @return reviewerFound Returns true if the address is a reviewer, false otherwise
+  /// @custom:visibility internal
+  function getNumberOfReviewsForHypercert(string memory _name, uint256 hypercertID) internal view returns (uint256) {
+    uint256 count = 0;
+    for (uint256 i = 0; i < reviewRequests[_name].reviews.length; i++) {
+        if (reviewRequests[_name].reviews[i].hypercertID == hypercertID) {
+            count++;
+        }
+    }
+    return count;
   }
 
   /// @notice Checks if a reviewer has already submitted a review for a specific hypercert
@@ -572,5 +613,14 @@ contract DeresyResolver is SchemaResolver, Ownable {
   /// @custom:requires Only callable by the owner
   function setAmendmentsSchemaID(bytes32 _amendmentsSchemaID) external onlyOwner {
 		amendmentsSchemaID = _amendmentsSchemaID;
+  }
+
+   /// @notice Checks if an address is a reviewer for a specific review request
+  /// @param reviewerAddress The address to check
+  /// @param _name The name of the review request
+  /// @return reviewerFound Returns true if the address is a reviewer, false otherwise
+  /// @custom:visibility external
+  function isReviewer(address reviewerAddress, string memory _name) public view returns (bool) {
+    return _isReviewer(reviewerAddress, _name);
   }
 }

@@ -1,0 +1,300 @@
+{
+  "contractName": "IOnReviewable",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "uid",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "schema",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint64",
+              "name": "time",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "expirationTime",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "revocationTime",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "refUID",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "attester",
+              "type": "address"
+            },
+            {
+              "internalType": "bool",
+              "name": "revocable",
+              "type": "bool"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "internalType": "struct Attestation",
+          "name": "attestation",
+          "type": "tuple"
+        },
+        {
+          "internalType": "string",
+          "name": "requestName",
+          "type": "string"
+        }
+      ],
+      "name": "onReview",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"uid\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"schema\",\"type\":\"bytes32\"},{\"internalType\":\"uint64\",\"name\":\"time\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"expirationTime\",\"type\":\"uint64\"},{\"internalType\":\"uint64\",\"name\":\"revocationTime\",\"type\":\"uint64\"},{\"internalType\":\"bytes32\",\"name\":\"refUID\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"attester\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"revocable\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"struct Attestation\",\"name\":\"attestation\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"requestName\",\"type\":\"string\"}],\"name\":\"onReview\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IOnReviewable.sol\":\"IOnReviewable\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@ethereum-attestation-service/eas-contracts/contracts/Common.sol\":{\"keccak256\":\"0x957bd2e6d0d6d637f86208b135c29fbaf4412cb08e5e7a61ede16b80561bf685\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://da1dc9aedbb1d4d39c46c2235918d3adfbc5741dd34a46010cf425d134e7936d\",\"dweb:/ipfs/QmWUk6bXnLaghS2riF3GTFEeURCzgYFMA5woa6AsgPwEgc\"]},\"@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol\":{\"keccak256\":\"0xd5a192f0bcee5372b69b0bb746c26317a2691dd10bfa52adbd08a9b723a55036\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ca836dd01016e7198a0b8e9e79d78512eb9db86dde6afd47f727f18d9a9c33a1\",\"dweb:/ipfs/QmXLTzcLUvA52qpVRUtVvj6L73cTmHk62jGsf6JErXFxD4\"]},\"@ethereum-attestation-service/eas-contracts/contracts/ISchemaRegistry.sol\":{\"keccak256\":\"0x772b1ebcf3e5c93fecb53762e11bbdae75fcb667deea4ac21134fccfe78326e4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://734ea6ab1e3bea7d8e0d478731c3b8888347ec01601d66d3072398b8984e8517\",\"dweb:/ipfs/QmQHZM7USiV88SUucWV7wwCpURv98dDngtFcsEaEnFwdtp\"]},\"@ethereum-attestation-service/eas-contracts/contracts/resolver/ISchemaResolver.sol\":{\"keccak256\":\"0xb74b64e20b90b35004750d2c78ceb114a304975d22d71bd9a2a9de0d483f0395\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0d0a30499e28e7c4ed62f2d8a88c46623c96830cc23e04ce6e9cd0cd0b11a03d\",\"dweb:/ipfs/QmYWNWu1cn7XDSaFgiMyn2L2coud3DNiGoNrNNo8QYcdyC\"]},\"project:/contracts/interfaces/IOnReviewable.sol\":{\"keccak256\":\"0x75085f6195410d68cee8107603702b28072729a338a130726ef6493c46b7af0b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://76a8abd9703ca4a1cd2ae702863172761eed91ced6590e56be7b6322103088a8\",\"dweb:/ipfs/QmVr96CBhaRWgLkuWe4awkK599GK1bR9upVgUzSnfEZGEJ\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.19;\n\n/**\n * @dev Interface of a reviewable contract.\n */\nimport { Attestation } from \"@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol\";\n\ninterface IOnReviewable {\n    function onReview(Attestation calldata attestation, string memory requestName) external returns (bool);\n}",
+  "sourcePath": "/home/ozzlopz/chimi/deresy/deresy-v2-smart-contracts/contracts/interfaces/IOnReviewable.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IOnReviewable.sol",
+    "exportedSymbols": {
+      "Attestation": [
+        47
+      ],
+      "IOnReviewable": [
+        4824
+      ]
+    },
+    "id": 4825,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4811,
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:29"
+      },
+      {
+        "absolutePath": "@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol",
+        "file": "@ethereum-attestation-service/eas-contracts/contracts/IEAS.sol",
+        "id": 4813,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 4825,
+        "sourceUnit": 357,
+        "src": "109:93:29",
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 4812,
+              "name": "Attestation",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 47,
+              "src": "118:11:29",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IOnReviewable",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 4824,
+        "linearizedBaseContracts": [
+          4824
+        ],
+        "name": "IOnReviewable",
+        "nameLocation": "214:13:29",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "bb69ab33",
+            "id": 4823,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "onReview",
+            "nameLocation": "243:8:29",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4819,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4816,
+                  "mutability": "mutable",
+                  "name": "attestation",
+                  "nameLocation": "273:11:29",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4823,
+                  "src": "252:32:29",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Attestation_$47_calldata_ptr",
+                    "typeString": "struct Attestation"
+                  },
+                  "typeName": {
+                    "id": 4815,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 4814,
+                      "name": "Attestation",
+                      "nameLocations": [
+                        "252:11:29"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 47,
+                      "src": "252:11:29"
+                    },
+                    "referencedDeclaration": 47,
+                    "src": "252:11:29",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Attestation_$47_storage_ptr",
+                      "typeString": "struct Attestation"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 4818,
+                  "mutability": "mutable",
+                  "name": "requestName",
+                  "nameLocation": "300:11:29",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4823,
+                  "src": "286:25:29",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4817,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "286:6:29",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "251:61:29"
+            },
+            "returnParameters": {
+              "id": 4822,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4821,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4823,
+                  "src": "331:4:29",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 4820,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "331:4:29",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "330:6:29"
+            },
+            "scope": 4824,
+            "src": "234:103:29",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 4825,
+        "src": "204:135:29",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:307:29"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.19+commit.7dd6d404.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.16",
+  "updatedAt": "2024-04-17T15:36:21.544Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
