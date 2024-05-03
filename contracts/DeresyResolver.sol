@@ -294,6 +294,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
     require(reviewRequests[_name].sponsor == address(0),"Deresy: Name duplicated");
     require(isTokenWhitelisted(paymentTokenAddress),"Deresy: Token is not whitelisted");
     require(validateRequestHypercerts(hypercertIDs), "Deresy: One or more hypercerts are not valid");
+    require(allReviewerContractsERC721(reviewerContracts), "Deresy: Not all reviewer contracts are ERC721 contracts");
 
     uint256 tokenFundsAmount;
 
@@ -476,10 +477,12 @@ contract DeresyResolver is SchemaResolver, Ownable {
     }
     for (uint j = 0; j < reviewRequests[_name].reviewerContracts.length; j++) {
       address erc721Address = reviewRequests[_name].reviewerContracts[j];
-      IERC721 erc721 = IERC721(erc721Address);
-      // Check if the balance of the address in the ERC721 contract is greater than 0
-      if (erc721.balanceOf(reviewerAddress) > 0) {
+      try IERC721(erc721Address).balanceOf(reviewerAddress) returns (uint256 balance) {
+        if (balance > 0) {
           return true;
+        }
+      } catch {
+        return false;
       }
     }
     return false;
@@ -571,12 +574,37 @@ contract DeresyResolver is SchemaResolver, Ownable {
     if (validateHypercertIDs) {
         for (uint256 i = 0; i < hypercertIDs.length; i++) {
             string memory uri = hypercertContract.uri(hypercertIDs[i]);
-            if (bytes(uri).length != 0) {
+            if (bytes(uri).length == 0) {
                 return false;
             }
         }
     }
     return true;
+  }
+
+  /// @notice Validates whether all reviewer contracts are ERC721 contracts
+  /// @param reviewerContracts Array of reviewer ERC721 contract addresses
+  /// @return isValid True if all reviewer contracts are ERC721 contracts, false otherwise
+  /// @custom:visibility internal
+  function allReviewerContractsERC721(address[] memory reviewerContracts) internal view returns (bool) {
+      for (uint256 i = 0; i < reviewerContracts.length; i++) {
+          if (!isERC721Contract(reviewerContracts[i])) {
+              return false;
+          }
+      }
+      return true;
+  }
+
+  /// @notice Checks if an address is an ERC721 contract
+  /// @param contractAddress The address to check
+  /// @return isValid True if the address is an ERC721 contract, false otherwise
+  /// @custom:visibility internal
+  function isERC721Contract(address contractAddress) internal view returns (bool) {
+      try IERC721(contractAddress).supportsInterface(0x80ac58cd) returns (bool supported) {
+          return supported;
+      } catch {
+          return false;
+      }
   }
 
   /// @notice Sets the callback contract address

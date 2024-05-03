@@ -1585,11 +1585,11 @@
 			]
 		},
 		"contracts/DeresyResolver.sol": {
-			"keccak256": "0xb247cfcebbe3747749c09c0c16370f9e7b5adff048accbada67e8f2d76920825",
+			"keccak256": "0xdeb182bee1518acb12864da07392a83849fa189b0d23ef90f3284857f65b1656",
 			"license": "AGPL-3.0-only",
 			"urls": [
-				"bzz-raw://c80eeb869bf887d2d370c591f3c658d5fcf29085319a73a5c74b2937211e0054",
-				"dweb:/ipfs/QmZDhNrY6ZjbRZVXrpwYbgcR6N5jCFcV4GGGMvM3KVfbmS"
+				"bzz-raw://e18d029e441c3d5d288cbb8f13240c1f50f444e0c491710d868bde218a03a567",
+				"dweb:/ipfs/QmUhk3zCDY6xbZJMi5nrM2FMGKR78VRTpZYsy4nFzw3Yji"
 			]
 		},
 		"contracts/interfaces/IHypercertable.sol": {

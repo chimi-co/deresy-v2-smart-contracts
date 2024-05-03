@@ -1,4 +1,6 @@
 const DeresyResolver = artifacts.require('DeresyResolver')
+const DeresyMockToken = artifacts.require("DeresyMockToken");
+const DeresyERC721MockToken = artifacts.require("DeresyERC721MockToken")
 const truffleAssert = require("truffle-assertions")
 const { assert } = require('chai')
 const BN = require("bn.js")
@@ -27,8 +29,12 @@ contract('DeresyResolver', (accounts) => {
   const reviewerContractAddress3 = "0x4200000000000000000000000000000000000002"
   // End testing variables ----------
   let deresyResolver
+  let deresyERC721MockToken
+  let deresyMockToken
   // Load contract
-  before(async ()=> {            
+  before(async ()=> {
+    deresyERC721MockToken = await DeresyERC721MockToken.new()
+    deresyMockToken = await DeresyMockToken.new()
     deresyResolver = await DeresyResolver.new(easContractAddress)
     await deresyResolver.unpause();
     await deresyResolver.setValidateHypercertIDs(false)
@@ -165,7 +171,7 @@ contract('DeresyResolver', (accounts) => {
 
       let requestName = "RRC1"
       let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
-      let reviewersContracts = []
+      let reviewersContracts = [deresyERC721MockToken.address]
       let hypercertsArray = [hypercertID1, hypercertID2]
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
@@ -227,7 +233,7 @@ contract('DeresyResolver', (accounts) => {
       });
     })
 
-    it("should create a review request if reviwer contracts is defined and reviewer addresses array is empty", async () => {
+    it("should create a review request if reviewer contracts is defined and reviewer addresses array is empty", async () => {
       let questionsArray = ["Q1", "Q2"]
       let questionTypesArray = [2, 1]
       let choicesArray = [["choice1", "choice2"], []]
@@ -236,7 +242,7 @@ contract('DeresyResolver', (accounts) => {
 
       let requestName = "RRC1-1"
       let reviewersArray = []
-      let reviewersContracts = [reviewerContractAddress1, reviewerContractAddress2, reviewerContractAddress3]
+      let reviewersContracts = [deresyERC721MockToken.address]
       let hypercertsArray = [hypercertID1, hypercertID2]
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
@@ -285,6 +291,23 @@ contract('DeresyResolver', (accounts) => {
       let hypercertsIPFSHashes = ["hash1", "hash2"]
       let ipfsHash = "hash"
       await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, reviewersContracts, hypercertsArray, hypercertsIPFSHashes, ipfsHash, 0, reviewersArray.length, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length * hypercertsArray.length }), "Deresy: Reward per review must be greater than zero for payed requests")
+    })
+
+    it("should revert if hypercerts a provided reviewerContract is not ERC721", async () => {
+      let questionsArray = ["Q1", "Q2"]
+      let questionTypesArray = [2, 1]
+      let choicesArray = [["choice1", "choice2"], []]
+      const reviewFormName = "RF11-ERC721"
+      await deresyResolver.createReviewForm(reviewFormName, questionsArray, choicesArray, questionTypesArray, { from: ownerAddress, value: 0 })
+
+      let requestName = "RRC3-ERC721"
+      let reviewersArray = [reviewerAddress1, reviewerAddress2, reviewerAddress3]
+      let reviewersContracts = [deresyERC721MockToken.address, deresyMockToken.address]
+      let hypercertsArray = [hypercertID1, hypercertID2]
+      let hypercertsIPFSHashes = ["hash1", "hash2"]
+      let ipfsHash = "hash"
+
+      await truffleAssert.reverts(deresyResolver.createRequest(requestName, reviewersArray, reviewersContracts, hypercertsArray, hypercertsIPFSHashes, ipfsHash, rewardPerReview1, reviewersArray.length, zeroAddress, reviewFormName, { from: ownerAddress, value: rewardPerReview1 * reviewersArray.length }), "Deresy: Not all reviewer contracts are ERC721 contracts")
     })
 
     it("should revert if hypercerts array is null", async () => {
