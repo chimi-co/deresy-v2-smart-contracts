@@ -154,7 +154,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
   /// @return Returns true if the review is valid and processed, false otherwise
   /// @custom:visibility internal
 	function processReview(Attestation calldata attestation) internal returns (bool) {
-		(string memory requestName, uint256 hypercertID, string[] memory answers,,,,) = abi.decode(attestation.data, (string, uint256, string[], string[], string[], string, string[]));
+		(string memory requestName, uint256 hypercertID, string[] memory answers,,,,,,,,) = abi.decode(attestation.data, (string, uint256, string[], string[], string[], string, string[], string, string, string[], string[]));
     ReviewRequest storage request = reviewRequests[requestName];
     ReviewForm storage requestForm = reviewForms[request.reviewFormName];
     address attester = attestation.attester;
@@ -174,7 +174,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
         if (request.paymentTokenAddress == address(0)) {
           payable(attester).transfer(request.rewardPerReview);
         } else {
-          require(IERC20(request.paymentTokenAddress).transfer(attester, request.rewardPerReview), "Token transfer failed");
+          require(IERC20(request.paymentTokenAddress).transfer(attester, request.rewardPerReview), "Deresy: ERC20 token transfer failed");
         }
       }
 
@@ -302,19 +302,18 @@ contract DeresyResolver is SchemaResolver, Ownable {
       require(rewardPerReview > 0, "Deresy: rewardPerReview must be greater than zero for payable request");
 
       if (paymentTokenAddress == address(0)) {
-        require(msg.value >= ((reviewsPerHypercert * hypercertIDs.length) * rewardPerReview), "Deresy: msg.value invalid");
+        require(msg.value >= (reviewsPerHypercert * hypercertIDs.length * rewardPerReview), "Deresy: msg.value invalid");
         tokenFundsAmount = msg.value;
       } else {
         require(msg.value == 0, "Deresy: msg.value is invalid");
 
-        tokenFundsAmount = ((reviewers.length * hypercertIDs.length) * rewardPerReview);
+        tokenFundsAmount = reviewsPerHypercert * hypercertIDs.length * rewardPerReview;
 
         require(
             IERC20(paymentTokenAddress).transferFrom(msg.sender, address(this), tokenFundsAmount),
-            "Deresy: Token transfer failed"
+            "Deresy: ERC20 token transfer failed"
         );
       }
-
     } else {
         require(rewardPerReview == 0, "Deresy: rewardPerReview must be zero for non-payable request");
     }
@@ -415,7 +414,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
   /// @custom:requires The review request must not already be closed
   function closeReviewRequest(string memory _name) external {
     require(msg.sender == reviewRequests[_name].sponsor, "Deresy: It is not the sponsor");
-    require(reviewRequests[_name].isClosed == false,"Deresy: request closed");
+    require(reviewRequests[_name].isClosed == false,"Deresy: Request closed");
     payable(reviewRequests[_name].sponsor).transfer(reviewRequests[_name].fundsLeft);
     reviewRequests[_name].isClosed = true;
     reviewRequests[_name].fundsLeft = 0;

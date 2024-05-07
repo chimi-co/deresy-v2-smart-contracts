@@ -75,9 +75,13 @@ contract('OnReviewableExample', (accounts) => {
         { type: 'string[]', name: 'questionTypes' },
         { type: 'string', name: 'pdfIpfsHash' },
         { type: 'string[]', name: 'attachmentsIpfsHashes' },
+        { type: 'string', name: 'notes1' },
+        { type: 'string', name: 'notes2' },
+        { type: 'string[]', name: 'rfu1' },
+        { type: 'string[]', name: 'rfu2' },
       ];
 
-      const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
+      const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", [], "", "", [""], [""]]);
       const attestation1 = {
         uid: attestationUID1,
         schema: reviewsSchemaUID,
@@ -92,7 +96,7 @@ contract('OnReviewableExample', (accounts) => {
       };
       await deresyAttestations.deresyAttestation(attestation1, { from: reviewerAddress2, value: 0 })
 
-      const encodedData2 = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID2, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
+      const encodedData2 = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID2, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", [], "", "", [""], [""]]);
       const attestation2 = {
         uid: attestationUID2,
         schema: reviewsSchemaUID,
@@ -142,9 +146,13 @@ contract('OnReviewableExample', (accounts) => {
       { type: 'string[]', name: 'questionTypes' },
       { type: 'string', name: 'pdfIpfsHash' },
       { type: 'string[]', name: 'attachmentsIpfsHashes' },
+      { type: 'string', name: 'notes1' },
+      { type: 'string', name: 'notes2' },
+      { type: 'string[]', name: 'rfu1' },
+      { type: 'string[]', name: 'rfu2' },
     ];
     
-    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", [], "", "", [""], [""]]);
     const attestation1 = {
       uid: attestationUID1,
       schema: reviewsSchemaUID,
@@ -193,9 +201,13 @@ contract('OnReviewableExample', (accounts) => {
       { type: 'string[]', name: 'questionTypes' },
       { type: 'string', name: 'pdfIpfsHash' },
       { type: 'string[]', name: 'attachmentsIpfsHashes' },
+      { type: 'string', name: 'notes1' },
+      { type: 'string', name: 'notes2' },
+      { type: 'string[]', name: 'rfu1' },
+      { type: 'string[]', name: 'rfu2' },
     ];
     
-    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", [], "", "", [""], [""]]);
     const attestation1 = {
       uid: attestationUID1,
       schema: reviewsSchemaUID,
@@ -239,9 +251,13 @@ contract('OnReviewableExample', (accounts) => {
       { type: 'string[]', name: 'questionTypes' },
       { type: 'string', name: 'pdfIpfsHash' },
       { type: 'string[]', name: 'attachmentsIpfsHashes' },
+      { type: 'string', name: 'notes1' },
+      { type: 'string', name: 'notes2' },
+      { type: 'string[]', name: 'rfu1' },
+      { type: 'string[]', name: 'rfu2' },
     ];
     
-    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", [], "", "", [""], [""]]);
     const attestation1 = {
       uid: attestationUID1,
       schema: reviewsSchemaUID,
@@ -285,9 +301,13 @@ contract('OnReviewableExample', (accounts) => {
       { type: 'string[]', name: 'questionTypes' },
       { type: 'string', name: 'pdfIpfsHash' },
       { type: 'string[]', name: 'attachmentsIpfsHashes' },
+      { type: 'string', name: 'notes1' },
+      { type: 'string', name: 'notes2' },
+      { type: 'string[]', name: 'rfu1' },
+      { type: 'string[]', name: 'rfu2' },
     ];
     
-    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", []]);
+    const encodedData = web3.eth.abi.encodeParameters(abi, [requestName, hypercertID1, answersArray, questionsArray, questionTypesArray, "pdfIpfsHash", [], "", "", [""], [""]]);
     const attestation1 = {
       uid: attestationUID1,
       schema: reviewsSchemaUID,
