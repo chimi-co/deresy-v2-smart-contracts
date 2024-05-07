@@ -53,7 +53,7 @@ contract DeresyResolver is SchemaResolver, Ownable {
 
   string[] reviewRequestNames;
   
-  string public contractVersion = "0.2";
+  string public contractVersion = "0.3";
 
   bool public paused = true;
 
