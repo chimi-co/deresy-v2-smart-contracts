@@ -1,0 +1,185 @@
+{
+  "contractName": "IHypercertable",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenID",
+          "type": "uint256"
+        }
+      ],
+      "name": "uri",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenID\",\"type\":\"uint256\"}],\"name\":\"uri\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for Hypercert compliant contract.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IHypercertable.sol\":\"IHypercertable\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IHypercertable.sol\":{\"keccak256\":\"0x37b59a74f7dc412d7730e338405112dc3d97016f8de968472a6703351c6a5a12\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9e724fda253fcd1d7d0fa58160b4097520c0298fd505af5d3ac248e809ddde83\",\"dweb:/ipfs/QmQR1XqDcSH3ZJauw8PmnqASra1QKZa7VVMbRRjng1GCS9\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.19;\n\n/**\n * @dev Interface for Hypercert compliant contract.\n */\n\ninterface IHypercertable {\n    function uri(uint256 tokenID) external returns (string memory);\n}",
+  "sourcePath": "/home/ozzlopz/chimi/deresy/deresy-v2-smart-contracts/contracts/interfaces/IHypercertable.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IHypercertable.sol",
+    "exportedSymbols": {
+      "IHypercertable": [
+        4809
+      ]
+    },
+    "id": 4810,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4800,
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:28"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IHypercertable",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 4801,
+          "nodeType": "StructuredDocumentation",
+          "src": "57:59:28",
+          "text": " @dev Interface for Hypercert compliant contract."
+        },
+        "fullyImplemented": false,
+        "id": 4809,
+        "linearizedBaseContracts": [
+          4809
+        ],
+        "name": "IHypercertable",
+        "nameLocation": "128:14:28",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "0e89341c",
+            "id": 4808,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "uri",
+            "nameLocation": "158:3:28",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4804,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4803,
+                  "mutability": "mutable",
+                  "name": "tokenID",
+                  "nameLocation": "170:7:28",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4808,
+                  "src": "162:15:28",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 4802,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "162:7:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "161:17:28"
+            },
+            "returnParameters": {
+              "id": 4807,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4806,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4808,
+                  "src": "197:13:28",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4805,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "197:6:28",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "196:15:28"
+            },
+            "scope": 4809,
+            "src": "149:63:28",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 4810,
+        "src": "118:96:28",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:182:28"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.19+commit.7dd6d404.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.16",
+  "updatedAt": "2024-04-17T15:36:21.544Z",
+  "devdoc": {
+    "details": "Interface for Hypercert compliant contract.",
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

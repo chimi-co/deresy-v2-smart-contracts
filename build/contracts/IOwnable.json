@@ -1,0 +1,186 @@
+{
+  "contractName": "IOwnable",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface of a ownable contract.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IOwnable.sol\":\"IOwnable\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IOwnable.sol\":{\"keccak256\":\"0xd2ad77c1af6bcf20c99a5f384a904fa93ce2acfffc32acbad463ab42caf097be\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c5b948f80342cb1cc1a18f6977635e38d936d93fee1af48b43d80a200895fb45\",\"dweb:/ipfs/QmSSDoetQXniKWo16sFHCeLnSpjFiSjD2hLYCctC9K7y2t\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.19;\n\n/**\n * @dev Interface of a ownable contract.\n */\n\ninterface IOwnable {\n    function balanceOf(address owner) external returns (uint256);\n}",
+  "sourcePath": "/home/ozzlopz/chimi/deresy/deresy-v2-smart-contracts/contracts/interfaces/IOwnable.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IOwnable.sol",
+    "exportedSymbols": {
+      "IOwnable": [
+        4835
+      ]
+    },
+    "id": 4836,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4826,
+        "literals": [
+          "solidity",
+          "0.8",
+          ".19"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:30"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IOwnable",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 4827,
+          "nodeType": "StructuredDocumentation",
+          "src": "57:48:30",
+          "text": " @dev Interface of a ownable contract."
+        },
+        "fullyImplemented": false,
+        "id": 4835,
+        "linearizedBaseContracts": [
+          4835
+        ],
+        "name": "IOwnable",
+        "nameLocation": "117:8:30",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "70a08231",
+            "id": 4834,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "balanceOf",
+            "nameLocation": "141:9:30",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4830,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4829,
+                  "mutability": "mutable",
+                  "name": "owner",
+                  "nameLocation": "159:5:30",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4834,
+                  "src": "151:13:30",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4828,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "151:7:30",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "150:15:30"
+            },
+            "returnParameters": {
+              "id": 4833,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4832,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4834,
+                  "src": "184:7:30",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 4831,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "184:7:30",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "183:9:30"
+            },
+            "scope": 4835,
+            "src": "132:61:30",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 4836,
+        "src": "107:88:30",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:163:30"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.19+commit.7dd6d404.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.16",
+  "updatedAt": "2024-04-17T15:36:21.544Z",
+  "devdoc": {
+    "details": "Interface of a ownable contract.",
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
